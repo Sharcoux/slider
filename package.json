@@ -45,6 +45,7 @@
     "metro-react-native-babel-preset": "^0.58.0",
     "react-native-typescript-transformer": "^1.2.13",
     "react-test-renderer": "16.11.0",
+    "release-it": "^13.5.8",
     "ts-jest": "^25.5.0",
     "ts-loader": "^7.0.2",
     "typescript": "^3.8.3",
