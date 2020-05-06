@@ -63,7 +63,7 @@
       "git add"
     ]
   },
-  "main": "src/index.tsx",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
