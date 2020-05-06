@@ -28,8 +28,8 @@ const App = () => {
       onValueChange={value => console.log('change:', value)}
       style={styles.slider}
       minimumValue={0}
-      maximumValue={10}
-      step={1}
+      maximumValue={1}
+      step={0.1}
     />
   </View>
 }

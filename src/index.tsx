@@ -43,9 +43,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
   const containerSize = React.useRef({ width: 0, height: 0 })
   const containerRef = forwardedRef || React.createRef()
   const [value, setValue] = React.useState(initialValue || minimumValue)
-  React.useLayoutEffect(() => {
-    if (initialValue !== value) setValue(initialValue)
-  }, [initialValue])
+  React.useLayoutEffect(() => updateValue(initialValue), [initialValue])
 
   const percentageValue =
       (value - minimumValue) / (maximumValue - minimumValue)
@@ -108,10 +106,11 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
       minimumValue,
       Math.min(newValue, maximumValue)
     )
-    if (value !== withinBounds) {
-      setValue(withinBounds)
-      onValueChange && onValueChange(withinBounds)
-    }
+    // FIXME: understand why this doesn't work as expected when reading the state from the props
+    // if (value !== withinBounds) {
+    setValue(withinBounds)
+    onValueChange && onValueChange(withinBounds)
+    // }
   }
 
   const onMove = (event: RN.GestureResponderEvent) => {
