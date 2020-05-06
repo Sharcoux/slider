@@ -1,7 +1,6 @@
 {
   "name": "@sharcoux/slider",
   "version": "3.0.0",
-  "private": true,
   "scripts": {
     "test": "jest",
     "prepare": "tsc",
