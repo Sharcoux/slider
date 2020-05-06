@@ -9,6 +9,7 @@
     "start": "react-native start",
     "lint": "eslint --fix .",
     "build": "webpack",
+    "release": "release-it",
     "web": "webpack-dev-server --open --mode development"
   },
   "dependencies": {
