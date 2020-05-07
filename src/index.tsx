@@ -107,10 +107,10 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
       Math.min(newValue, maximumValue)
     )
     // FIXME: understand why this doesn't work as expected when reading the state from the props
-    // if (value !== withinBounds) {
-    setValue(withinBounds)
-    onValueChange && onValueChange(withinBounds)
-    // }
+    if (value !== withinBounds) {
+      setValue(withinBounds)
+      onValueChange && onValueChange(withinBounds)
+    }
   }
 
   const onMove = (event: RN.GestureResponderEvent) => {

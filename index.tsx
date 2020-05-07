@@ -4,6 +4,7 @@ import Slider from './src'
 import { name as appName } from './app.json'
 
 const App = () => {
+  const [value, setValue] = React.useState(0)
   return <View>
     <Slider
       onSlidingStart={value => console.log('start:', value)}
@@ -17,8 +18,9 @@ const App = () => {
       style={styles.slider}
       minimumValue={0}
       maximumValue={10}
-      value={4}
+      value={value}
       step={1}
+      onValueChange={setValue}
       minimumTrackTintColor="blue"
       maximumTrackTintColor="red"
     />
