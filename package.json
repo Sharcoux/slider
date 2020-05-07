@@ -12,7 +12,7 @@
     "release": "release-it",
     "web": "webpack-dev-server --open --mode development"
   },
-  "dependencies": {
+  "peerDependencies": {
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-native": "0.62.2",
