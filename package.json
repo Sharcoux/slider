@@ -13,7 +13,7 @@
     "web": "webpack-dev-server --open --mode development"
   },
   "dependencies": {
-    "react": "16.11.0",
+    "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-native": "0.62.2",
     "react-native-web": "^0.12.2"
