@@ -54,6 +54,7 @@
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3"
   },
+  "files": ["dist/*", "src/*"],
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
