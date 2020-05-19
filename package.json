@@ -1,6 +1,16 @@
 {
   "name": "@sharcoux/slider",
   "version": "3.2.0",
+  "homepage": "https://github.com/Sharcoux/slider",
+  "author": {
+    "name": "François Billioud",
+    "email": "f.billioud@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/Sharcoux/slider/issues",
+    "email": "f.billioud@gmail.com"
+  },
+  "license": "ISC",
   "scripts": {
     "test": "jest",
     "prepare": "tsc",
