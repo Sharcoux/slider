@@ -45,6 +45,18 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
   const [value, setValue] = React.useState(initialValue || minimumValue)
   React.useLayoutEffect(() => updateValue(initialValue), [initialValue])
 
+  // We should round number with the same precision as the min, max or step values if provided
+  function calculatePrecision () {
+    if (!step) return Infinity
+    else {
+      // Calculate the number of decimals we can encounter in the results
+      const decimals = [minimumValue, maximumValue, step].map(value => ((value + '').split('.').pop() || '').length)
+      return Math.max(...decimals)
+    }
+  }
+  const decimalPrecision = React.useRef(calculatePrecision())
+  React.useEffect(() => { decimalPrecision.current = calculatePrecision() }, [step])
+
   const percentageValue =
       (value - minimumValue) / (maximumValue - minimumValue)
   const minPercent = percentageValue
@@ -101,10 +113,13 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
   )
 
   const updateValue = (newValue: number) => {
+    // Ensure that the value is correctly rounded
+    const hardRounded = decimalPrecision.current < 20 ? Number.parseFloat(newValue.toFixed(decimalPrecision.current)) : newValue
+
     // Ensure that the new value is still between the bounds
     const withinBounds = Math.max(
       minimumValue,
-      Math.min(newValue, maximumValue)
+      Math.min(hardRounded, maximumValue)
     )
     // FIXME: understand why this doesn't work as expected when reading the state from the props
     if (value !== withinBounds) {
