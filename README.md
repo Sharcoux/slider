@@ -24,6 +24,7 @@ import Slider from '@sharcoux/slider'
   maximumTrackTintColor='grey'      // The track color after the current value
   thumbTintColor='darkcyan'         // The color of the slider's thumb
   thumbStyle={undefined}            // Override the thumb's style
+  trackStyle={undefined}            // Override the tracks' style
   inverted={false}                  // If true, min value will be on the right, and max on the left
   enabled={true}                    // If false, the slider won't respond to touches anymore
   trackHeight={4}                   // The track's height in pixel

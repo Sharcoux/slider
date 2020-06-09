@@ -10,6 +10,7 @@ export type SliderProps = RN.ViewProps & {
   maximumTrackTintColor?: string;
   thumbTintColor?: string;
   thumbStyle?: RN.ViewStyle;
+  trackStyle?: RN.ViewStyle;
   style?: RN.ViewStyle;
   inverted?: boolean;
   enabled?: boolean;
@@ -30,6 +31,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     maximumTrackTintColor = 'grey',
     thumbTintColor = 'darkcyan',
     thumbStyle,
+    trackStyle,
     style,
     inverted = false,
     enabled = true,
@@ -78,31 +80,52 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     style
   )
 
-  const trackStyle = {
+  const trackViewStyle = RN.StyleSheet.compose({
     height: trackHeight,
     borderRadius: trackHeight / 2,
+    // This is for web
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
     userSelect: 'none'
+  }, trackStyle)
+
+  const minimumTrackStyle = RN.StyleSheet.compose(
+    trackViewStyle,
+    {
+      backgroundColor: minimumTrackTintColor,
+      flexGrow: minPercent * 100,
+      borderTopEndRadius: 0,
+      borderBottomEndRadius: 0
+    }
+  )
+
+  const maximumTrackStyle = RN.StyleSheet.compose(
+    trackViewStyle,
+    {
+      backgroundColor: maximumTrackTintColor,
+      flexGrow: maxPercent * 100,
+      borderTopStartRadius: 0,
+      borderBottomStartRadius: 0
+    }
+  )
+
+  const thumbContainerStyle: RN.ViewStyle = {
+    width: thumbSize,
+    height: thumbSize,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1
   }
 
-  const minimumTrackStyle = {
-    ...trackStyle,
-    backgroundColor: minimumTrackTintColor,
-    flexGrow: minPercent * 100
-  }
-
-  const maximumTrackStyle = {
-    ...trackStyle,
-    backgroundColor: maximumTrackTintColor,
-    flexGrow: maxPercent * 100
-  }
-
+  /** We want to cover the end of the track */
+  const ray = thumbSize + trackHeight / 4
   const thumbViewStyle = RN.StyleSheet.compose(
     {
-      width: thumbSize,
-      height: thumbSize,
+      width: ray,
+      height: ray,
       backgroundColor: thumbTintColor,
       zIndex: 1,
-      borderRadius: thumbSize / 2,
+      borderRadius: ray / 2,
       overflow: 'hidden',
       // This is for web
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
@@ -137,6 +160,12 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     const roundedValue = step ? Math.round(newValue / step) * step : newValue
     updateValue(roundedValue)
   }
+
+  const onPress = (event: RN.GestureResponderEvent) => {
+    onMove(event)
+    onSlidingStart && onSlidingStart(value)
+  }
+
   const accessibilityActions = (event: RN.AccessibilityActionEvent) => {
     const tenth = (maximumValue - minimumValue) / 10
     switch (event.nativeEvent.actionName) {
@@ -181,7 +210,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
       style={containerStyle}
       onStartShouldSetResponder={() => enabled}
       onMoveShouldSetResponder={() => enabled}
-      onResponderGrant={() => onSlidingStart && onSlidingStart(value)}
+      onResponderGrant={onPress}
       onResponderRelease={() => onSlidingComplete && onSlidingComplete(value)}
       onResponderMove={onMove}
       // This is for web
@@ -190,7 +219,9 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
       onKeyPress={handleAccessibilityKeys}
       {...others}>
       <RN.View pointerEvents="none" style={minimumTrackStyle} />
-      <RN.View pointerEvents="none" style={thumbViewStyle} />
+      <RN.View pointerEvents="none" style={thumbContainerStyle}>
+        <RN.View style={thumbViewStyle} />
+      </RN.View>
       <RN.View pointerEvents="none" style={maximumTrackStyle} />
     </RN.View>
   )
