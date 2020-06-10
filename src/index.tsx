@@ -93,9 +93,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     trackViewStyle,
     {
       backgroundColor: minimumTrackTintColor,
-      flexGrow: minPercent * 100,
-      borderTopEndRadius: 0,
-      borderBottomEndRadius: 0
+      flexGrow: minPercent * 100
     }
   )
 
@@ -103,22 +101,20 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     trackViewStyle,
     {
       backgroundColor: maximumTrackTintColor,
-      flexGrow: maxPercent * 100,
-      borderTopStartRadius: 0,
-      borderBottomStartRadius: 0
+      flexGrow: maxPercent * 100
     }
   )
 
   const thumbContainerStyle: RN.ViewStyle = {
-    width: thumbSize,
-    height: thumbSize,
+    width: trackHeight,
+    height: trackHeight,
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1
   }
 
   /** We want to cover the end of the track */
-  const ray = thumbSize + trackHeight / 4
+  const ray = thumbSize
   const thumbViewStyle = RN.StyleSheet.compose(
     {
       width: ray,
