@@ -1,6 +1,7 @@
 # React Native Slider
 
 This Implementation of a slider is fully compatible with React-Native and React-Native-Web.
+It also provides support for Range slider (with 2 thumbs)
 
 ## Install
 
@@ -10,10 +11,12 @@ npm i -S @sharcoux/slider
 
 ## Usage
 
+### Slider
+
 You can see below the available props with their respective default values
 
 ```javascript
-import Slider from '@sharcoux/slider'
+import { Slider } from '@sharcoux/slider'
 
 <Slider
   value={0}                         // set the current slider's value
@@ -25,15 +28,70 @@ import Slider from '@sharcoux/slider'
   thumbTintColor='darkcyan'         // The color of the slider's thumb
   thumbStyle={undefined}            // Override the thumb's style
   trackStyle={undefined}            // Override the tracks' style
+  vertical={false}                  // If true, the slider will be drawn vertically
   inverted={false}                  // If true, min value will be on the right, and max on the left
   enabled={true}                    // If false, the slider won't respond to touches anymore
   trackHeight={4}                   // The track's height in pixel
   thumbSize={15}                    // The thumb's size in pixel
-  onValueChange={undefined}         // Called each time the value changed
-  onSlidingStart={undefined}        // Called when the slider is pressed
-  onSlidingComplete={undefined}     // Called when the press is released
+  onValueChange={undefined}         // Called each time the value changed. The type is (value: number) => void
+  onSlidingStart={undefined}        // Called when the slider is pressed. The type is (value: number) => void
+  onSlidingComplete={undefined}     // Called when the press is released. The type is (value: number) => void
   {...props}                        // Add any View Props that will be applied to the container (style, ref, etc)
 />
 ```
+
+### **Range Slider**
+
+You can see below the available props with their respective default values
+
+```javascript
+import { Range } from '@sharcoux/slider'
+
+<Range
+  range={[0, 1]}                    // set the current slider's value
+  minimumValue={0}                  // Minimum value
+  maximumValue={1}                  // Maximum value
+  step={0}                          // The step for the slider (0 means that the slider will handle any decimal value within the range [min, max])
+  outboundColor='grey'              // The track color outside the current range value
+  inboundColor='grey'               // The track color inside the current range value
+  thumbTintColor='darkcyan'         // The color of the slider's thumb
+  thumbStyle={undefined}            // Override the thumb's style
+  trackStyle={undefined}            // Override the tracks' style
+  vertical={false}                  // If true, the slider will be drawn vertically
+  inverted={false}                  // If true, min value will be on the right, and max on the left
+  enabled={true}                    // If false, the slider won't respond to touches anymore
+  trackHeight={4}                   // The track's height in pixel
+  thumbSize={15}                    // The thumb's size in pixel
+  onValueChange={undefined}         // Called each time the value changed. The type is (range: [number, number]) => void
+  onSlidingStart={undefined}        // Called when the slider is pressed. The type is (range: [number, number]) => void
+  onSlidingComplete={undefined}     // Called when the press is released. The type is (range: [number, number]) => void
+  {...props}                        // Add any View Props that will be applied to the container (style, ref, etc)
+/>
+```
+
+## Better performance with Animated API
+
+If you have issues with performances, you can try to use these implementations instead:
+
+### Slider
+
+```javascript
+import { AnimatedSlider } from '@sharcoux/slider'
+
+<AnimatedSlider
+  {...props}
+/>
+```
+
+### Range Slider
+
+```javascript
+import { AnimatedRange } from '@sharcoux/slider'
+
+<AnimatedRange
+  {...props}
+/>
+```
+
 
 If you have any issue, please fill an issue [on our repo](https://github.com/Sharcoux/slider/issues)
