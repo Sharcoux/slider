@@ -12,7 +12,7 @@ const useThumb = ({ step, value: propValue, minimumValue, maximumValue, onValueC
   const [value, setValue] = React.useState(propValue || minimumValue) // The value desired
   const decimalPrecision = React.useRef(0)
 
-  React.useLayoutEffect(() => updateValue(value), [value]) // Update the value on props change
+  React.useLayoutEffect(() => updateValue(propValue), [propValue]) // Update the value on props change
   React.useLayoutEffect(() => {
     // We should round number with the same precision as the min, max or step values if provided
     function calculatePrecision () {
