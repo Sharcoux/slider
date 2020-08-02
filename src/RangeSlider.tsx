@@ -10,9 +10,9 @@ export type SliderProps = RN.ViewProps & {
   minimumValue?: number;
   maximumValue?: number;
   step?: number;
-  outboundColor?: string;
-  inboundColor?: string;
-  thumbTintColor?: string;
+  outboundColor?: RN.ColorValue;
+  inboundColor?: RN.ColorValue;
+  thumbTintColor?: RN.ColorValue;
   thumbStyle?: RN.StyleProp<RN.ViewStyle>;
   trackStyle?: RN.StyleProp<RN.ViewStyle>;
   style?: RN.StyleProp<RN.ViewStyle>;

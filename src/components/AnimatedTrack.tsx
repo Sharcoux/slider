@@ -3,7 +3,7 @@ import * as RN from 'react-native'
 
 type Props = {
   style?: RN.StyleProp<RN.ViewStyle>;
-  color: string;
+  color: RN.ColorValue;
   vertical: boolean;
   thickness: number;
   length: RN.Animated.AnimatedInterpolation;
