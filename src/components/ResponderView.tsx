@@ -27,7 +27,7 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
 }: Props, ref) => {
   const isVertical = vertical || (style && (RN.StyleSheet.flatten(style).flexDirection || '').startsWith('column'))
   const containerSize = React.useRef({ width: 0, height: 0 })
-  const forwardRef = ref || React.createRef<RN.View>()
+  const forwardRef = ref || React.useRef<RN.View>(null)
 
   const containerStyle = [
     {
