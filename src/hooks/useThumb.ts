@@ -37,7 +37,7 @@ const useThumb = ({ step, value: propValue, minimumValue, maximumValue, onValueC
       Math.min(hardRounded, maximumValue)
     )
     setValue(withinBounds)
-    onValueChange && onValueChange(withinBounds)
+    onValueChange && value !== withinBounds && onValueChange(withinBounds)
   }
 
   return { updateValue, value }
