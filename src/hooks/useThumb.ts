@@ -1,4 +1,5 @@
 import React from 'react'
+import useRounding from './useRounding'
 
 type Props = {
   step: number;
@@ -10,34 +11,17 @@ type Props = {
 
 const useThumb = ({ step, value: propValue, minimumValue, maximumValue, onValueChange }: Props) => {
   const [value, setValue] = React.useState(propValue || minimumValue) // The value desired
-  const decimalPrecision = React.useRef(0)
+  const round = useRounding({ step, minimumValue, maximumValue })
 
-  React.useLayoutEffect(() => updateValue(propValue), [propValue]) // Update the value on props change
+  // Update the value on props change
   React.useLayoutEffect(() => {
-    // We should round number with the same precision as the min, max or step values if provided
-    function calculatePrecision () {
-      if (!step) return Infinity
-      else {
-        // Calculate the number of decimals we can encounter in the results
-        const decimals = [minimumValue, maximumValue, step].map(value => ((value + '').split('.').pop() || '').length)
-        return Math.max(...decimals)
-      }
-    }
-    decimalPrecision.current = calculatePrecision()
     updateValue(value)
-  }, [step, minimumValue, maximumValue]) // Update the precision on step changes
+  }, [step, minimumValue, maximumValue, propValue])
 
   const updateValue = (newValue: number) => {
-    // Ensure that the value is correctly rounded
-    const hardRounded = decimalPrecision.current < 20 ? Number.parseFloat(newValue.toFixed(decimalPrecision.current)) : newValue
-
-    // Ensure that the new value is still between the bounds
-    const withinBounds = Math.max(
-      minimumValue,
-      Math.min(hardRounded, maximumValue)
-    )
-    setValue(withinBounds)
-    onValueChange && value !== withinBounds && onValueChange(withinBounds)
+    const rounded = round(newValue)
+    setValue(rounded)
+    onValueChange && value !== rounded && onValueChange(rounded)
   }
 
   return { updateValue, value }

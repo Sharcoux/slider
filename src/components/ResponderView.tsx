@@ -1,5 +1,6 @@
 import React from 'react'
 import * as RN from 'react-native'
+import useRounding from '../hooks/useRounding'
 
 type Props = RN.ViewProps & {
   value: number;
@@ -28,6 +29,7 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
   const isVertical = vertical || (style && (RN.StyleSheet.flatten(style).flexDirection || '').startsWith('column'))
   const containerSize = React.useRef({ width: 0, height: 0 })
   const forwardRef = ref || React.useRef<RN.View>(null)
+  const round = useRounding({ step, minimumValue, maximumValue })
 
   const containerStyle = [
     {
@@ -79,8 +81,7 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
     const newValue = inverted
       ? maximumValue - ((maximumValue - minimumValue) * offset) / size
       : minimumValue + ((maximumValue - minimumValue) * offset) / size
-    const roundedValue = step ? Math.round(newValue / step) * step : newValue
-    return roundedValue
+    return round(newValue)
   }
 
   const onMove = (event: RN.GestureResponderEvent) => {
