@@ -13,10 +13,15 @@ const useThumb = ({ step, value: propValue, minimumValue, maximumValue, onValueC
   const [value, setValue] = React.useState(propValue || minimumValue) // The value desired
   const round = useRounding({ step, minimumValue, maximumValue })
 
-  // Update the value on props change
+  // Update the value on bounds change
   React.useLayoutEffect(() => {
     updateValue(value)
-  }, [step, minimumValue, maximumValue, propValue])
+  }, [step, minimumValue, maximumValue])
+
+  // Update the value on manual value change
+  React.useLayoutEffect(() => {
+    updateValue(propValue)
+  }, [propValue])
 
   const updateValue = (newValue: number) => {
     const rounded = round(newValue)
