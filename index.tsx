@@ -20,9 +20,9 @@ const App = () => {
     <Slider
       style={styles.slider}
       minimumValue={0}
-      maximumValue={10}
+      maximumValue={100}
       value={value}
-      step={1}
+      step={10}
       onValueChange={setValue}
       minimumTrackTintColor="blue"
       maximumTrackTintColor="red"
