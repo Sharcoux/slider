@@ -4,6 +4,7 @@ import useThumb from './hooks/useAnimatedThumb'
 import Track from './components/AnimatedTrack'
 import Thumb from './components/Thumb'
 import ResponderView from './components/ResponderView'
+import useDrag from './hooks/useDrag'
 
 export type SliderProps = RN.ViewProps & {
   value?: number;
@@ -19,6 +20,7 @@ export type SliderProps = RN.ViewProps & {
   inverted?: boolean;
   vertical?: boolean;
   enabled?: boolean;
+  slideOnTap?: boolean;
   trackHeight?: number;
   thumbSize?: number;
   onValueChange?: (value: number) => void;
@@ -41,6 +43,7 @@ const AnimatedSlider = React.forwardRef<RN.View, SliderProps>((props: SliderProp
     inverted = false,
     vertical = false,
     enabled = true,
+    slideOnTap = true,
     trackHeight = 4,
     thumbSize = 15,
     onValueChange,
@@ -49,22 +52,20 @@ const AnimatedSlider = React.forwardRef<RN.View, SliderProps>((props: SliderProp
     ...others
   } = props
 
-  const { updateValue, animatedValue, value } = useThumb({
+  const { updateValue, animatedValue, value, canMove } = useThumb({
     minimumValue,
     maximumValue,
     value: propValue,
     step,
-    onValueChange
+    onValueChange,
+    slideOnTap
   })
 
-  const onPress = (value: number) => {
-    updateValue(value)
-    onSlidingStart && onSlidingStart(value)
-  }
+  const { onPress, onMove, onRelease } = useDrag({ value, updateValue, onSlidingComplete, onSlidingStart, canMove })
 
   return (
     <ResponderView style={style} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
-      value={value} updateValue={updateValue} onPress={onPress} onMove={updateValue} onRelease={onSlidingComplete}
+      value={value} updateValue={updateValue} onPress={onPress} onMove={onMove} onRelease={onRelease}
       enabled={enabled} vertical={vertical} inverted={inverted} {...others}
     >
       <Track color={minimumTrackTintColor} style={trackStyle} length={animatedValue.interpolate({

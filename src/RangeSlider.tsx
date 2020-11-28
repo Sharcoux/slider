@@ -4,6 +4,7 @@ import useRange from './hooks/useRange'
 import Track from './components/Track'
 import Thumb from './components/Thumb'
 import ResponderView from './components/ResponderView'
+import useDrag from './hooks/useDrag'
 
 export type SliderProps = RN.ViewProps & {
   range?: [number, number];
@@ -19,6 +20,7 @@ export type SliderProps = RN.ViewProps & {
   inverted?: boolean;
   vertical?: boolean;
   enabled?: boolean;
+  slideOnTap?: boolean;
   trackHeight?: number;
   thumbSize?: number;
   onValueChange?: (range: [number, number]) => void;
@@ -41,6 +43,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     inverted = false,
     vertical = false,
     enabled = true,
+    slideOnTap = true,
     trackHeight = 4,
     thumbSize = 15,
     onValueChange,
@@ -49,50 +52,33 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     ...others
   } = props
 
-  const { updateValue, range: [minValue, maxValue] } = useRange({
+  const { updateClosestValue, updateMaxValue, range, canMove } = useRange({
     minimumValue,
     maximumValue,
     range: propValue,
     step,
+    slideOnTap,
     onValueChange
   })
 
-  const updateMaxValue = (value: number) => updateValue([minValue, value])
-  const updateClosestValue = (value: number): [number, number] => {
-    const isMinClosest = Math.abs(value - minValue) < Math.abs(value - maxValue)
-    return isMinClosest ? [value, maxValue] : [minValue, value]
-  }
-  const onPress = (value: number) => {
-    const newRange = updateClosestValue(value)
-    updateValue(newRange)
-    onSlidingStart && onSlidingStart(newRange)
-  }
-  const onRelease = (value: number) => {
-    const newRange = updateClosestValue(value)
-    onSlidingComplete && onSlidingComplete(newRange)
-  }
-  const onMove = (value: number) => {
-    const newRange = updateClosestValue(value)
-    updateValue(newRange)
-  }
+  const { onPress, onMove, onRelease } = useDrag({ value: range, updateValue: updateClosestValue, onSlidingComplete, onSlidingStart, canMove })
 
-  const minPercentage = (minValue - minimumValue) / (maximumValue - minimumValue)
-  const maxPercentage = (maxValue - minimumValue) / (maximumValue - minimumValue)
+  const minTrackPct = React.useMemo(() => (range[0] - minimumValue) / (maximumValue - minimumValue), [range[0], minimumValue, maximumValue])
+  const maxTrackPct = React.useMemo(() => (range[1] - minimumValue) / (maximumValue - minimumValue), [range[1], minimumValue, maximumValue])
 
   return (
     <ResponderView style={style} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
-      value={maxValue} updateValue={updateMaxValue} onPress={onPress} onMove={onMove} onRelease={onRelease}
+      value={range[1]} updateValue={updateMaxValue} onPress={onPress} onMove={onMove} onRelease={onRelease}
       enabled={enabled} vertical={vertical} inverted={inverted} {...others}
     >
-      <Track color={outboundColor} style={trackStyle} length={minPercentage * 100} vertical={vertical} thickness={trackHeight} />
+      <Track color={outboundColor} style={trackStyle} length={minTrackPct * 100} vertical={vertical} thickness={trackHeight} />
       <Thumb size={thumbSize} color={thumbTintColor} trackHeight={trackHeight} style={thumbStyle} />
-      <Track color={inboundColor} style={trackStyle} length={(maxPercentage - minPercentage) * 100} vertical={vertical} thickness={trackHeight} />
+      <Track color={inboundColor} style={trackStyle} length={(maxTrackPct - minTrackPct) * 100} vertical={vertical} thickness={trackHeight} />
       <Thumb size={thumbSize} color={thumbTintColor} trackHeight={trackHeight} style={thumbStyle} />
-      <Track color={outboundColor} style={trackStyle} length={(1 - maxPercentage) * 100} vertical={vertical} thickness={trackHeight} />
+      <Track color={outboundColor} style={trackStyle} length={(1 - maxTrackPct) * 100} vertical={vertical} thickness={trackHeight} />
     </ResponderView>
   )
-}
-)
+})
 
 Slider.displayName = 'Slider'
 

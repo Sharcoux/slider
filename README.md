@@ -62,6 +62,7 @@ import { Range } from '@sharcoux/slider'
   enabled={true}                    // If false, the slider won't respond to touches anymore
   trackHeight={4}                   // The track's height in pixel
   thumbSize={15}                    // The thumb's size in pixel
+  slideOnTap={true}                 // If true, touching the slider will update it's value. No need to slide the thumb.
   onValueChange={undefined}         // Called each time the value changed. The type is (range: [number, number]) => void
   onSlidingStart={undefined}        // Called when the slider is pressed. The type is (range: [number, number]) => void
   onSlidingComplete={undefined}     // Called when the press is released. The type is (range: [number, number]) => void
@@ -69,29 +70,18 @@ import { Range } from '@sharcoux/slider'
 />
 ```
 
-## Better performance with Animated API
+## Slider V5
 
-If you have issues with performances, you can try to use these implementations instead:
+In version 5, I removed the Animated API as it cannot work on mobile until [this issue](https://github.com/facebook/react-native/pull/27506) is fixed by Facebook.
 
-### Slider
+On the other hand, the default implementation should have received a performance boost that would make the Animated version theoretically useless.
 
-```javascript
-import { AnimatedSlider } from '@sharcoux/slider'
+I also added a prop `slideOnTap` to define if the slider should change it's value when pressing it, or only on slide.
 
-<AnimatedSlider
-  {...props}
-/>
-```
+### Changelog:
 
-### Range Slider
-
-```javascript
-import { AnimatedRange } from '@sharcoux/slider'
-
-<AnimatedRange
-  {...props}
-/>
-```
-
+ * Remove `AnimatedSlider` and `AnimatedRangeSlider`
+ * new `slideOnTap` prop
+ * performance boost
 
 If you have any issue, please fill an issue [on our repo](https://github.com/Sharcoux/slider/issues)

@@ -6,43 +6,56 @@ type Props = {
   range: [number, number];
   minimumValue: number;
   maximumValue: number;
+  slideOnTap: boolean | undefined;
   onValueChange?: (range: [number, number]) => void;
 }
 
-const useRange = ({ step, range: propValue, minimumValue, maximumValue, onValueChange }: Props) => {
+/** Handle the state of a range slider */
+const useRange = ({ step, range: propValue, minimumValue, maximumValue, slideOnTap, onValueChange }: Props) => {
   const [min, setMin] = React.useState(propValue[0])
   const [max, setMax] = React.useState(propValue[1])
 
-  const onMinValueChange = (value: number) => {
-    setMin(value)
-    onValueChange && onValueChange([value, maxValue])
-  }
-  const onMaxValueChange = (value: number) => {
-    setMax(value)
-    onValueChange && onValueChange([minValue, value])
-  }
+  // Memoïze the range between renders
+  const range = React.useMemo(() => ([min, max] as [number, number]), [min, max])
 
-  const { updateValue: updateMinValue, value: minValue } = useThumb({
+  // Call onValueChange when the range changes
+  React.useEffect(() => {
+    onValueChange && onValueChange(range)
+  }, range)
+
+  // Min value thumb
+  const { updateValue: updateMinValue, canMove: canMoveMin } = useThumb({
     minimumValue,
     maximumValue,
     value: propValue[0],
     step,
-    onValueChange: onMinValueChange
+    slideOnTap,
+    onValueChange: setMin
   })
-  const { updateValue: updateMaxValue, value: maxValue } = useThumb({
+
+  // Max value thumb
+  const { updateValue: updateMaxValue, canMove: canMoveMax } = useThumb({
     minimumValue,
     maximumValue,
     value: propValue[1],
     step,
-    onValueChange: onMaxValueChange
+    slideOnTap,
+    onValueChange: setMax
   })
 
-  const updateValue = (range: [number, number]) => {
-    updateMinValue(range[0])
-    updateMaxValue(range[1])
-  }
+  // Method to update the lower or higher bound according to which one is the closest
+  const updateClosestValue = React.useCallback((value: number): [number, number] => {
+    const [minValue, maxValue] = range
+    const isMinClosest = Math.abs(value - minValue) < Math.abs(value - maxValue)
+    isMinClosest ? updateMinValue(value) : updateMaxValue(value)
+    return isMinClosest ? [value, maxValue] : [minValue, value]
+  }, [updateMinValue, updateMaxValue, range])
 
-  return { updateValue, range: [min, max] }
+  const canMove = React.useCallback((value: number) => {
+    return canMoveMax(value) || canMoveMin(value)
+  }, [canMoveMin, canMoveMax])
+
+  return { updateMinValue, updateMaxValue, updateClosestValue, canMove, range }
 }
 
 export default useRange

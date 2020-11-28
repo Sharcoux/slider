@@ -4,6 +4,7 @@ import useAnimatedRange from './hooks/useAnimatedRange'
 import Track from './components/AnimatedTrack'
 import Thumb from './components/Thumb'
 import ResponderView from './components/ResponderView'
+import useDrag from './hooks/useDrag'
 
 export type SliderProps = RN.ViewProps & {
   range?: [number, number];
@@ -19,6 +20,7 @@ export type SliderProps = RN.ViewProps & {
   inverted?: boolean;
   vertical?: boolean;
   enabled?: boolean;
+  slideOnTap?: boolean;
   trackHeight?: number;
   thumbSize?: number;
   onValueChange?: (range: [number, number]) => void;
@@ -26,6 +28,7 @@ export type SliderProps = RN.ViewProps & {
   onSlidingComplete?: (range: [number, number]) => void;
 }
 
+/** A Range slider for React Native / React Native Web, using the Animated API */
 const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwardedRef) => {
   const {
     minimumValue = 0,
@@ -41,6 +44,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     inverted = false,
     vertical = false,
     enabled = true,
+    slideOnTap = true,
     trackHeight = 4,
     thumbSize = 15,
     onValueChange,
@@ -49,32 +53,21 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     ...others
   } = props
 
-  const { updateMinValue, updateMaxValue, range: [minValue, maxValue], animatedRange: [minboundValue, maxRangeValue] } = useAnimatedRange({
+  // Get the slider state
+  const { updateClosestValue, updateMaxValue, canMove, range, animatedRange: [minboundValue, maxRangeValue] } = useAnimatedRange({
     minimumValue,
     maximumValue,
     range: propValue,
     step,
+    slideOnTap,
     onValueChange
   })
 
-  const updateClosestValue = (value: number): [number, number] => {
-    const isMinClosest = Math.abs(value - minValue) < Math.abs(value - maxValue)
-    const range: [number, number] = isMinClosest ? [value, maxValue] : [minValue, value]
-    isMinClosest ? updateMinValue(value) : updateMaxValue(value)
-    return range
-  }
-  const onPress = (value: number) => {
-    const newRange = updateClosestValue(value)
-    onSlidingStart && onSlidingStart(newRange)
-  }
-  const onRelease = (value: number) => {
-    const newRange = updateClosestValue(value)
-    onSlidingComplete && onSlidingComplete(newRange)
-  }
+  const { onPress, onMove, onRelease } = useDrag({ value: range, updateValue: updateClosestValue, onSlidingComplete, onSlidingStart, canMove })
 
   return (
     <ResponderView style={style} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
-      value={maxValue} updateValue={updateMaxValue} onPress={onPress} onMove={updateClosestValue} onRelease={onRelease}
+      value={range[1]} updateValue={updateMaxValue} onPress={onPress} onMove={onMove} onRelease={onRelease}
       enabled={enabled} vertical={vertical} inverted={inverted} {...others}
     >
       <Track color={outboundColor} style={trackStyle} length={minboundValue.interpolate({

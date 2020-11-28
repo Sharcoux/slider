@@ -6,10 +6,13 @@ type Props = {
   value: number;
   minimumValue: number;
   maximumValue: number;
+  slideOnTap: boolean | undefined;
   onValueChange?: (value: number) => void;
 }
 
-const useThumb = ({ step, value: propValue, minimumValue, maximumValue, onValueChange }: Props) => {
+/** Handle the state of a thumb for a slider */
+const useThumb = (props: Props) => {
+  const { step, value: propValue, slideOnTap, minimumValue, maximumValue, onValueChange } = props
   const [value, setValue] = React.useState(propValue || minimumValue) // The value desired
   const round = useRounding({ step, minimumValue, maximumValue })
 
@@ -23,13 +26,36 @@ const useThumb = ({ step, value: propValue, minimumValue, maximumValue, onValueC
     updateValue(propValue)
   }, [propValue])
 
-  const updateValue = (newValue: number) => {
-    const rounded = round(newValue)
-    setValue(rounded)
-    onValueChange && value !== rounded && onValueChange(rounded)
-  }
+  // This block will group close call to setValue into one single update to greatly improve perfs
+  const [updated, setUpdated] = React.useState(false)
+  const nextValue = React.useRef(value)
+  React.useEffect(() => {
+    if (updated) {
+      setUpdated(false)
+      setValue(nextValue.current)
+    }
+  }, [updated])
+  React.useEffect(() => { onValueChange && onValueChange(value) }, [value])
 
-  return { updateValue, value }
+  /** Update the thumb value */
+  const updateValue = React.useCallback((newValue: number) => {
+    const rounded = round(newValue)
+    nextValue.current = rounded
+    if (!updated) setUpdated(true)
+  }, [round, updated, setUpdated])
+
+  /**
+   * Indicates whether we accept to move to the specified position.
+   * If the position is too far and slideOnTap is set, we don't accept sliding there
+   **/
+  const canMove = React.useCallback((newValue: number) => {
+    console.log(newValue, value, slideOnTap, Math.abs(newValue - value) / (maximumValue - minimumValue))
+    if (slideOnTap) return true
+    else if (step) return Math.abs(newValue - value) < step
+    else return Math.abs(newValue - value) / (maximumValue - minimumValue) < 0.1
+  }, slideOnTap ? [] : [value, step, maximumValue, minimumValue])
+
+  return { updateValue, canMove, value }
 }
 
 export default useThumb

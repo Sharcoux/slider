@@ -6,6 +6,11 @@ type Props = {
   maximumValue: number;
 }
 
+/**
+ * Provide a rounding method given the provided slider configuration.
+ * The results will be rounded, with the minimum amount of digits, and
+ * we make sure that it still fits within the bounds.
+*/
 const useRounding = ({ step, minimumValue, maximumValue }: Props) => {
   return React.useCallback((value: number) => {
     // Caluculate the precision we need to represent the values

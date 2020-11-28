@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet, AppRegistry, Platform } from 'react-native'
-import { Slider, AnimatedSlider, RangeSlider, AnimatedRangeSlider } from './src'
+import { Slider, RangeSlider } from './src'
 import { name as appName } from './app.json'
 
 const App = () => {
@@ -14,6 +14,7 @@ const App = () => {
       onValueChange={value => console.log('change:', value)}
       style={styles.slider}
       inverted={true}
+      slideOnTap={false}
       minimumValue={0}
       maximumValue={1}
     />
@@ -48,40 +49,41 @@ const App = () => {
       maximumValue={1}
       step={0.1}
     />
-    <Text style={styles.title}>Animated Slider</Text>
+    <Text style={styles.title}>Range Slider</Text>
     <View>
-      <AnimatedSlider
+      <RangeSlider
         onSlidingStart={value => console.log('start:', value)}
         onSlidingComplete={value => console.log('complete:', value)}
         onValueChange={value => console.log('change:', value)}
         style={styles.slider}
         inverted={true}
+        slideOnTap={false}
         minimumValue={0}
         maximumValue={1}
       />
-      <AnimatedSlider
+      <RangeSlider
         style={styles.slider}
         minimumValue={0}
         maximumValue={10}
-        value={value}
+        range={range}
         step={1}
-        onValueChange={setValue}
-        minimumTrackTintColor="blue"
-        maximumTrackTintColor="red"
+        onValueChange={setRange}
+        outboundColor="blue"
+        inboundColor="red"
       />
-      <AnimatedSlider
+      <RangeSlider
         style={styles.verticalSlider}
         minimumValue={0}
         maximumValue={10}
-        value={value}
+        range={range}
         step={1}
         inverted={true}
         vertical={true}
-        onValueChange={setValue}
-        minimumTrackTintColor="blue"
-        maximumTrackTintColor="red"
+        onValueChange={setRange}
+        outboundColor="blue"
+        inboundColor="red"
       />
-      <AnimatedSlider
+      <RangeSlider
         onSlidingStart={value => console.log('start:', value)}
         onSlidingComplete={value => console.log('complete:', value)}
         onValueChange={value => console.log('change:', value)}
@@ -91,9 +93,9 @@ const App = () => {
         step={0.1}
       />
     </View>
-    <Text style={styles.title}>Range Slider</Text>
+    {/* <Text style={styles.title}>Animated Slider</Text>
     <View>
-      <RangeSlider
+      <AnimatedSlider
         onSlidingStart={value => console.log('start:', value)}
         onSlidingComplete={value => console.log('complete:', value)}
         onValueChange={value => console.log('change:', value)}
@@ -102,29 +104,29 @@ const App = () => {
         minimumValue={0}
         maximumValue={1}
       />
-      <RangeSlider
+      <AnimatedSlider
         style={styles.slider}
         minimumValue={0}
         maximumValue={10}
-        range={range}
+        value={value}
         step={1}
-        onValueChange={setRange}
-        outboundColor="blue"
-        inboundColor="red"
+        onValueChange={setValue}
+        minimumTrackTintColor="blue"
+        maximumTrackTintColor="red"
       />
-      <RangeSlider
+      <AnimatedSlider
         style={styles.verticalSlider}
         minimumValue={0}
         maximumValue={10}
-        range={range}
+        value={value}
         step={1}
         inverted={true}
         vertical={true}
-        onValueChange={setRange}
-        outboundColor="blue"
-        inboundColor="red"
+        onValueChange={setValue}
+        minimumTrackTintColor="blue"
+        maximumTrackTintColor="red"
       />
-      <RangeSlider
+      <AnimatedSlider
         onSlidingStart={value => console.log('start:', value)}
         onSlidingComplete={value => console.log('complete:', value)}
         onValueChange={value => console.log('change:', value)}
@@ -176,7 +178,7 @@ const App = () => {
         maximumValue={1}
         step={0.1}
       />
-    </View>
+    </View> */}
   </View>
 }
 

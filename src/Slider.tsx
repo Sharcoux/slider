@@ -4,6 +4,7 @@ import useThumb from './hooks/useThumb'
 import Track from './components/Track'
 import Thumb from './components/Thumb'
 import ResponderView from './components/ResponderView'
+import useDrag from './hooks/useDrag'
 
 export type SliderProps = RN.ViewProps & {
   value?: number;
@@ -19,6 +20,7 @@ export type SliderProps = RN.ViewProps & {
   inverted?: boolean;
   vertical?: boolean;
   enabled?: boolean;
+  slideOnTap?: boolean;
   trackHeight?: number;
   thumbSize?: number;
   onValueChange?: (value: number) => void;
@@ -41,6 +43,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     inverted = false,
     vertical = false,
     enabled = true,
+    slideOnTap = true,
     trackHeight = 4,
     thumbSize = 15,
     onValueChange,
@@ -49,24 +52,22 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     ...others
   } = props
 
-  const { updateValue, value } = useThumb({
+  const { updateValue, value, canMove } = useThumb({
     minimumValue,
     maximumValue,
     value: propValue,
     step,
+    slideOnTap,
     onValueChange
   })
 
-  const onPress = (value: number) => {
-    updateValue(value)
-    onSlidingStart && onSlidingStart(value)
-  }
+  const { onPress, onMove, onRelease } = useDrag({ value, canMove, updateValue, onSlidingComplete, onSlidingStart })
 
-  const percentage = (value - minimumValue) / (maximumValue - minimumValue)
+  const percentage = React.useMemo(() => (value - minimumValue) / (maximumValue - minimumValue), [value, minimumValue, maximumValue])
 
   return (
     <ResponderView style={style} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
-      value={value} updateValue={updateValue} onPress={onPress} onMove={updateValue} onRelease={onSlidingComplete}
+      value={value} updateValue={updateValue} onPress={onPress} onMove={onMove} onRelease={onRelease}
       enabled={enabled} vertical={vertical} inverted={inverted} {...others}
     >
       <Track color={minimumTrackTintColor} style={trackStyle} length={percentage * 100} vertical={vertical} thickness={trackHeight} />
