@@ -1,5 +1,3 @@
 export { default as Slider } from './Slider'
-export { default as AnimatedSlider } from './AnimatedSlider'
 export { default as RangeSlider } from './RangeSlider'
-export { default as AnimatedRangeSlider } from './AnimatedRangeSlider'
 export { default } from './Slider'
