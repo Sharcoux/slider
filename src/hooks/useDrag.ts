@@ -18,7 +18,6 @@ const useDrag = <T extends number | [number, number], >({ value, canMove, update
   }, [sliding])
 
   const onPress = React.useCallback((value: number) => {
-    console.log(canMove(value))
     if (!canMove(value)) return
     setSliding(true)
     updateValue(value)
@@ -26,7 +25,7 @@ const useDrag = <T extends number | [number, number], >({ value, canMove, update
 
   const onRelease = React.useCallback(() => {
     if (sliding) setSliding(false)
-  }, [setSliding])
+  }, [setSliding, sliding])
 
   const onMove = React.useCallback((value: number) => {
     if (sliding) updateValue(value)

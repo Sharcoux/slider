@@ -49,7 +49,6 @@ const useThumb = (props: Props) => {
    * If the position is too far and slideOnTap is set, we don't accept sliding there
    **/
   const canMove = React.useCallback((newValue: number) => {
-    console.log(newValue, value, slideOnTap, Math.abs(newValue - value) / (maximumValue - minimumValue))
     if (slideOnTap) return true
     else if (step) return Math.abs(newValue - value) < step
     else return Math.abs(newValue - value) / (maximumValue - minimumValue) < 0.1
