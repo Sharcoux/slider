@@ -8,17 +8,17 @@ type Props = {
   trackHeight: number;
 }
 
-const Thumb = ({ color = 'darcyan', trackHeight, size = 15, style }: Props) => {
-  const thumbContainerStyle: RN.ViewStyle = {
+const Thumb = ({ color = 'darkcyan', trackHeight, size = 15, style }: Props) => {
+  const thumbContainerStyle: RN.ViewStyle = React.useMemo(() => ({
     width: trackHeight,
     height: trackHeight,
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1
-  }
+  }), [trackHeight])
 
   /** We want to cover the end of the track */
-  const thumbViewStyle = RN.StyleSheet.compose(
+  const thumbViewStyle = React.useMemo(() => RN.StyleSheet.compose(
     {
       width: size,
       height: size,
@@ -32,11 +32,11 @@ const Thumb = ({ color = 'darcyan', trackHeight, size = 15, style }: Props) => {
       userSelect: 'none'
     },
     style
-  )
+  ), [style, size, color])
 
   return <RN.View pointerEvents="none" style={thumbContainerStyle}>
     <RN.View style={thumbViewStyle} />
   </RN.View>
 }
 
-export default Thumb
+export default React.memo(Thumb)

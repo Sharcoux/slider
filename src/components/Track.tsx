@@ -28,4 +28,4 @@ const Track = ({ style, thickness, length, vertical, color = 'grey' }: Props) =>
   return <RN.View pointerEvents="none" style={trackViewStyle} />
 }
 
-export default Track
+export default React.memo(Track)

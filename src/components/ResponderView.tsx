@@ -13,11 +13,16 @@ type Props = RN.ViewProps & {
   enabled: boolean;
   thumbSize?: number;
   updateValue: (value: number) => void;
-  onMove?: (value: number) => void;
-  onPress?: (value: number) => void;
-  onRelease?: (value: number) => void;
+  onMove: (value: number) => void;
+  onPress: (value: number) => void;
+  onRelease: (value: number) => void;
   children?: React.ReactNode;
 }
+
+const accessibility = [
+  { name: 'increment', label: 'increment' },
+  { name: 'decrement', label: 'decrement' }
+]
 
 const ResponderView = React.forwardRef<RN.View, Props>(({
   vertical, inverted, enabled,
@@ -26,12 +31,13 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
   updateValue,
   ...props
 }: Props, ref) => {
-  const isVertical = vertical || (style && (RN.StyleSheet.flatten(style).flexDirection || '').startsWith('column'))
   const containerSize = React.useRef({ width: 0, height: 0 })
   const forwardRef = ref || React.useRef<RN.View>(null)
   const round = useRounding({ step, minimumValue, maximumValue })
 
-  const containerStyle = [
+  // We calculate the style of the container
+  const isVertical = React.useMemo(() => vertical || (style && (RN.StyleSheet.flatten(style).flexDirection || '').startsWith('column')), [vertical, style])
+  const containerStyle = React.useMemo(() => ([
     {
       flexGrow: 1,
       flexShrink: 1,
@@ -45,8 +51,10 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
       cursor: 'pointer'
     } as RN.ViewStyle,
     style
-  ]
-  const accessibilityActions = (event: RN.AccessibilityActionEvent) => {
+  ]), [style, isVertical, inverted])
+
+  // Accessibility actions
+  const accessibilityActions = React.useCallback((event: RN.AccessibilityActionEvent) => {
     const tenth = (maximumValue - minimumValue) / 10
     switch (event.nativeEvent.actionName) {
       case 'increment':
@@ -56,9 +64,8 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
         updateValue(value - (step || tenth))
         break
     }
-  }
-
-  const handleAccessibilityKeys = (event: RN.NativeSyntheticEvent<KeyboardEvent>) => {
+  }, [maximumValue, minimumValue, updateValue, value, step])
+  const handleAccessibilityKeys = React.useCallback((event: RN.NativeSyntheticEvent<KeyboardEvent>) => {
     const key = event.nativeEvent.key
     switch (key) {
       case 'ArrowUp':
@@ -72,9 +79,11 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
         accessibilityActions(accessibilityEvent)
       } break
     }
-  }
+  }, [accessibilityActions])
+  const accessibilityValues = React.useMemo(() => ({ min: minimumValue, max: maximumValue, now: value }), [minimumValue, maximumValue, value])
 
-  function eventToValue (event: RN.GestureResponderEvent) {
+  /** Convert a touch event into it's position on the slider */
+  const eventToValue = React.useCallback((event: RN.GestureResponderEvent) => {
     const { locationX: x, locationY: y } = event.nativeEvent
     const offset = isVertical ? y : x
     const size = containerSize.current ? containerSize.current[isVertical ? 'height' : 'width'] : 1
@@ -82,36 +91,34 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
       ? maximumValue - ((maximumValue - minimumValue) * offset) / size
       : minimumValue + ((maximumValue - minimumValue) * offset) / size
     return round(newValue)
-  }
+  }, [round, maximumValue, minimumValue])
 
-  const onMove = (event: RN.GestureResponderEvent) => {
-    props.onMove && props.onMove(eventToValue(event))
-  }
+  const onMove = React.useCallback((event: RN.GestureResponderEvent) => {
+    props.onMove(eventToValue(event))
+  }, [props.onMove, eventToValue])
 
-  const onPress = (event: RN.GestureResponderEvent) => {
-    props.onPress && props.onPress(eventToValue(event))
-  }
+  const onPress = React.useCallback((event: RN.GestureResponderEvent) => {
+    props.onPress(eventToValue(event))
+  }, [props.onPress, eventToValue])
 
-  const onRelease = (event: RN.GestureResponderEvent) => {
-    props.onRelease && props.onRelease(eventToValue(event))
-  }
+  const onRelease = React.useCallback((event: RN.GestureResponderEvent) => {
+    props.onRelease(eventToValue(event))
+  }, [props.onRelease, eventToValue])
+
+  const isEnabled = React.useCallback(() => enabled, [enabled])
+  const onLayout = React.useCallback(({ nativeEvent }: RN.LayoutChangeEvent) => (containerSize.current = nativeEvent.layout), [])
 
   return <RN.View
     ref={forwardRef}
-    onLayout={({ nativeEvent }) =>
-      (containerSize.current = nativeEvent.layout)
-    }
-    accessibilityActions={[
-      { name: 'increment', label: 'increment' },
-      { name: 'decrement', label: 'decrement' }
-    ]}
+    onLayout={onLayout}
+    accessibilityActions={accessibility}
     onAccessibilityAction={accessibilityActions}
     accessible={true}
-    accessibilityValue={{ min: minimumValue, max: maximumValue, now: value }}
+    accessibilityValue={accessibilityValues}
     accessibilityRole={'adjustable'}
     style={containerStyle}
-    onStartShouldSetResponder={() => enabled}
-    onMoveShouldSetResponder={() => enabled}
+    onStartShouldSetResponder={isEnabled}
+    onMoveShouldSetResponder={isEnabled}
     onResponderGrant={onPress}
     onResponderRelease={onRelease}
     onResponderMove={onMove}
@@ -122,4 +129,4 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
     {...props} />
 })
 
-export default ResponderView
+export default React.memo(ResponderView)
