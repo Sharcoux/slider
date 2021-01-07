@@ -33,6 +33,7 @@ import { Slider } from '@sharcoux/slider'
   enabled={true}                    // If false, the slider won't respond to touches anymore
   trackHeight={4}                   // The track's height in pixel
   thumbSize={15}                    // The thumb's size in pixel
+  slideOnTap={true}                 // If true, touching the slider will update it's value. No need to slide the thumb.
   onValueChange={undefined}         // Called each time the value changed. The type is (value: number) => void
   onSlidingStart={undefined}        // Called when the slider is pressed. The type is (value: number) => void
   onSlidingComplete={undefined}     // Called when the press is released. The type is (value: number) => void
