@@ -45,9 +45,9 @@ import { Slider } from '@sharcoux/slider'
 You can see below the available props with their respective default values
 
 ```javascript
-import { Range } from '@sharcoux/slider'
+import { RangeSlider } from '@sharcoux/slider'
 
-<Range
+<RangeSlider
   range={[0, 1]}                    // set the current slider's value
   minimumValue={0}                  // Minimum value
   maximumValue={1}                  // Maximum value
