@@ -8,49 +8,51 @@ const App = () => {
   const [range, setRange] = React.useState<[number, number]>([0, 0])
   return <View>
     <Text style={styles.title}>Raw Slider</Text>
-    <Slider
-      onSlidingStart={value => console.log('start:', value)}
-      onSlidingComplete={value => console.log('complete:', value)}
-      onValueChange={value => console.log('change:', value)}
-      style={styles.slider}
-      inverted={true}
-      slideOnTap={false}
-      minimumValue={0}
-      maximumValue={1}
-    />
-    <Slider
-      style={styles.slider}
-      minimumValue={0}
-      maximumValue={100}
-      value={value}
-      step={10}
-      onValueChange={setValue}
-      minimumTrackTintColor="blue"
-      maximumTrackTintColor="red"
-    />
-    <Slider
-      style={styles.verticalSlider}
-      minimumValue={0}
-      maximumValue={10}
-      value={value}
-      step={1}
-      inverted={true}
-      vertical={true}
-      onValueChange={setValue}
-      minimumTrackTintColor="blue"
-      maximumTrackTintColor="red"
-    />
-    <Slider
-      onSlidingStart={value => console.log('start:', value)}
-      onSlidingComplete={value => console.log('complete:', value)}
-      onValueChange={value => console.log('change:', value)}
-      style={styles.slider}
-      minimumValue={0}
-      maximumValue={1}
-      step={0.1}
-    />
+    <View style={styles.category}>
+      <Slider
+        onSlidingStart={value => console.log('start:', value)}
+        onSlidingComplete={value => console.log('complete:', value)}
+        onValueChange={value => console.log('change:', value)}
+        style={styles.slider}
+        inverted={true}
+        slideOnTap={false}
+        minimumValue={0}
+        maximumValue={1}
+      />
+      <Slider
+        style={styles.slider}
+        minimumValue={0}
+        maximumValue={100}
+        value={value}
+        step={10}
+        onValueChange={setValue}
+        minimumTrackTintColor="blue"
+        maximumTrackTintColor="red"
+      />
+      <Slider
+        style={styles.verticalSlider}
+        minimumValue={0}
+        maximumValue={10}
+        value={value}
+        step={1}
+        inverted={true}
+        vertical={true}
+        onValueChange={setValue}
+        minimumTrackTintColor="blue"
+        maximumTrackTintColor="red"
+      />
+      <Slider
+        onSlidingStart={value => console.log('start:', value)}
+        onSlidingComplete={value => console.log('complete:', value)}
+        onValueChange={value => console.log('change:', value)}
+        style={styles.slider}
+        minimumValue={0}
+        maximumValue={1}
+        step={0.1}
+      />
+    </View>
     <Text style={styles.title}>Range Slider</Text>
-    <View>
+    <View style={styles.category}>
       <RangeSlider
         onSlidingStart={value => console.log('start:', value)}
         onSlidingComplete={value => console.log('complete:', value)}
@@ -97,6 +99,9 @@ const App = () => {
 }
 
 const styles = StyleSheet.create({
+  category: {
+    flexDirection: 'row'
+  },
   slider: {
     width: 200,
     height: 40,

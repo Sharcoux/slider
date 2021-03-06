@@ -1,7 +1,10 @@
 # React Native Slider
 
-This Implementation of a slider is fully compatible with React-Native and React-Native-Web.
-It also provides support for Range slider (with 2 thumbs)
+This lightweight version of a slider is fully compatible with React-Native and React-Native-Web.
+It also provides support for Range slider (with 2 thumbs).
+No extra dependencies!
+
+![](slider.gif)
 
 ## Install
 
