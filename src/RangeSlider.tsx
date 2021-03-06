@@ -10,6 +10,7 @@ export type SliderProps = RN.ViewProps & {
   range?: [number, number];
   minimumValue?: number;
   maximumValue?: number;
+  minimumRange?: number;
   step?: number;
   outboundColor?: RN.ColorValue;
   inboundColor?: RN.ColorValue;
@@ -23,6 +24,7 @@ export type SliderProps = RN.ViewProps & {
   slideOnTap?: boolean;
   trackHeight?: number;
   thumbSize?: number;
+  crossingAllowed?: boolean;
   onValueChange?: (range: [number, number]) => void;
   onSlidingStart?: (range: [number, number]) => void;
   onSlidingComplete?: (range: [number, number]) => void;
@@ -46,6 +48,8 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     slideOnTap = true,
     trackHeight = 4,
     thumbSize = 15,
+    minimumRange = step,
+    crossingAllowed = false,
     onValueChange,
     onSlidingStart,
     onSlidingComplete,
@@ -53,11 +57,13 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
   } = props
 
   const { updateClosestValue, updateMaxValue, range, canMove } = useRange({
+    minimumRange,
     minimumValue,
     maximumValue,
     range: propValue,
     step,
     slideOnTap,
+    crossingAllowed,
     onValueChange
   })
 

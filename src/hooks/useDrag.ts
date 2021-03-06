@@ -4,7 +4,7 @@ type Props<T extends number | [number, number]> = {
   value: T;
   onSlidingStart?: (value: T) => void
   onSlidingComplete?: (value: T) => void
-  updateValue: (value: number) => void;
+  updateValue: (value: number, state: 'press' | 'release' | 'drag') => void;
   canMove: (value: number) => boolean;
 }
 
@@ -20,15 +20,17 @@ const useDrag = <T extends number | [number, number], >({ value, canMove, update
   const onPress = React.useCallback((value: number) => {
     if (!canMove(value)) return
     setSliding(true)
-    updateValue(value)
+    updateValue(value, 'press')
   }, [updateValue, setSliding, canMove])
 
-  const onRelease = React.useCallback(() => {
-    if (sliding) setSliding(false)
+  const onRelease = React.useCallback((value: number) => {
+    if (!sliding) return
+    setSliding(false)
+    updateValue(value, 'release')
   }, [setSliding, sliding])
 
   const onMove = React.useCallback((value: number) => {
-    if (sliding) updateValue(value)
+    if (sliding) updateValue(value, 'drag')
   }, [updateValue, sliding])
 
   return { onPress, onRelease, onMove }
