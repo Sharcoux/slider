@@ -53,6 +53,8 @@ import { RangeSlider } from '@sharcoux/slider'
   minimumValue={0}                  // Minimum value
   maximumValue={1}                  // Maximum value
   step={0}                          // The step for the slider (0 means that the slider will handle any decimal value within the range [min, max])
+  minimumRange={step || 0}          // Minimum range between the two thumbs
+  crossingAllowed={false}           // If true, the user can make one thumb cross over the second thumb
   outboundColor='grey'              // The track color outside the current range value
   inboundColor='grey'               // The track color inside the current range value
   thumbTintColor='darkcyan'         // The color of the slider's thumb
@@ -79,7 +81,12 @@ On the other hand, the default implementation should have received a performance
 
 I also added a prop `slideOnTap` to define if the slider should change it's value when pressing it, or only on slide.
 
-### Changelog:
+### Changelog V 5.1.0:
+
+ * new `crossingAllowed` prop on RangeSlider
+ * new `minimumRange` prop on RangeSlider
+
+### Changelog V 5.0.0:
 
  * Remove `AnimatedSlider` and `AnimatedRangeSlider`
  * new `slideOnTap` prop
