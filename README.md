@@ -2,7 +2,12 @@
 
 This lightweight version of a slider is fully compatible with React-Native and React-Native-Web.
 It also provides support for Range slider (with 2 thumbs).
-No extra dependencies!
+
+ * **Same API** as @react-native-community/slider (with some more features of course!)
+ * **lightweight**
+ * **Range slider** for sliders with min and max values
+ * Supports for **React-Native-Web**
+ * **No extra dependencies!**
 
 ![](slider.gif)
 
