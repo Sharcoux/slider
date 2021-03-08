@@ -1,9 +1,16 @@
 {
   "name": "@sharcoux/slider",
-  "version": "5.1.1",
+  "version": "5.1.2",
   "homepage": "https://github.com/Sharcoux/slider",
   "description": "Lightweight slider for React-Native and React-Native-Web. A Range slider is included",
-  "keywords": ["react-native", "react", "native", "react-native-web", "slider", "range"],
+  "keywords": [
+    "react-native",
+    "react",
+    "native",
+    "react-native-web",
+    "slider",
+    "range"
+  ],
   "author": {
     "name": "François Billioud",
     "email": "f.billioud@gmail.com"
