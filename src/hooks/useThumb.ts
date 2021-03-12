@@ -35,14 +35,19 @@ const useThumb = (props: Props) => {
       setValue(nextValue.current)
     }
   }, [updated])
-  React.useEffect(() => { onValueChange && onValueChange(value) }, [value])
 
   /** Update the thumb value */
   const updateValue = React.useCallback((newValue: number) => {
     const rounded = round(newValue)
     nextValue.current = rounded
-    if (!updated) setUpdated(true)
+    if (!updated && rounded !== value) setUpdated(true)
   }, [round, updated, setUpdated])
+
+  /** Call onValueChange when the user changed the value */
+  const userUpdateValue = React.useCallback((newValue: number) => {
+    updateValue(newValue)
+    onValueChange && onValueChange(nextValue.current)
+  }, [updateValue, onValueChange])
 
   /**
    * Indicates whether we accept to move to the specified position.
@@ -54,7 +59,7 @@ const useThumb = (props: Props) => {
     else return Math.abs(newValue - value) / (maximumValue - minimumValue) < 0.1
   }, slideOnTap ? [] : [value, step, maximumValue, minimumValue])
 
-  return { updateValue, canMove, value }
+  return { updateValue: userUpdateValue, canMove, value }
 }
 
 export default useThumb
