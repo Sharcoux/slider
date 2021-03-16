@@ -100,11 +100,13 @@ const App = () => {
 
 const styles = StyleSheet.create({
   category: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent: 'space-around'
   },
   slider: {
     width: 200,
     height: 40,
+    flexGrow: 0,
     borderWidth: 1,
     borderColor: 'black',
     borderStyle: 'solid'
@@ -112,6 +114,7 @@ const styles = StyleSheet.create({
   verticalSlider: {
     height: 200,
     width: 40,
+    flexGrow: 0,
     borderWidth: 1,
     borderColor: 'black',
     borderStyle: 'solid'

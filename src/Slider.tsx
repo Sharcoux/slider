@@ -64,9 +64,11 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
   const { onPress, onMove, onRelease } = useDrag({ value, canMove, updateValue, onSlidingComplete, onSlidingStart })
 
   const percentage = React.useMemo(() => (value - minimumValue) / (maximumValue - minimumValue), [value, minimumValue, maximumValue])
+  // We add a default padding to ensure that the responder view has enough space to recognize the touches
+  const responderStyle = React.useMemo(() => [{ [vertical ? 'paddingHorizontal' : 'paddingVertical']: 10 }, style], [style, vertical])
 
   return (
-    <ResponderView style={style} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
+    <ResponderView style={responderStyle} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
       value={value} updateValue={updateValue} onPress={onPress} onMove={onMove} onRelease={onRelease}
       enabled={enabled} vertical={vertical} inverted={inverted} {...others}
     >
