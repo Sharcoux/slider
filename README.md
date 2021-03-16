@@ -89,6 +89,10 @@ On the other hand, the default implementation should have received a performance
 
 I also added a prop `slideOnTap` to define if the slider should change it's value when pressing it, or only on slide.
 
+### Changelog V 5.2.0:
+
+ * Adding a default padding of 10 on the ResponderView so that the touches events are more easily catched by the slider.
+
 ### Changelog V 5.1.0:
 
  * new `crossingAllowed` prop on RangeSlider
