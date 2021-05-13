@@ -72,15 +72,18 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
   const minTrackPct = React.useMemo(() => (range[0] - minimumValue) / (maximumValue - minimumValue), [range[0], minimumValue, maximumValue])
   const maxTrackPct = React.useMemo(() => (range[1] - minimumValue) / (maximumValue - minimumValue), [range[1], minimumValue, maximumValue])
 
+  // See https://github.com/Sharcoux/slider/issues/13
+  const thumbRadius = Math.min(trackHeight, thumbSize)
+
   return (
     <ResponderView style={style} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
       value={range[1]} updateValue={updateMaxValue} onPress={onPress} onMove={onMove} onRelease={onRelease}
       enabled={enabled} vertical={vertical} inverted={inverted} {...others}
     >
       <Track color={outboundColor} style={trackStyle} length={minTrackPct * 100} vertical={vertical} thickness={trackHeight} />
-      <Thumb size={thumbSize} color={thumbTintColor} trackHeight={trackHeight} style={thumbStyle} />
+      <Thumb size={thumbSize} color={thumbTintColor} trackHeight={thumbRadius} style={thumbStyle} />
       <Track color={inboundColor} style={trackStyle} length={(maxTrackPct - minTrackPct) * 100} vertical={vertical} thickness={trackHeight} />
-      <Thumb size={thumbSize} color={thumbTintColor} trackHeight={trackHeight} style={thumbStyle} />
+      <Thumb size={thumbSize} color={thumbTintColor} trackHeight={thumbRadius} style={thumbStyle} />
       <Track color={outboundColor} style={trackStyle} length={(1 - maxTrackPct) * 100} vertical={vertical} thickness={trackHeight} />
     </ResponderView>
   )

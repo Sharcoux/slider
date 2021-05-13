@@ -67,13 +67,16 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
   // We add a default padding to ensure that the responder view has enough space to recognize the touches
   const responderStyle = React.useMemo(() => [{ [vertical ? 'paddingHorizontal' : 'paddingVertical']: 10 }, style], [style, vertical])
 
+  // See https://github.com/Sharcoux/slider/issues/13
+  const thumbRadius = Math.min(trackHeight, thumbSize)
+
   return (
     <ResponderView style={responderStyle} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
       value={value} updateValue={updateValue} onPress={onPress} onMove={onMove} onRelease={onRelease}
       enabled={enabled} vertical={vertical} inverted={inverted} {...others}
     >
       <Track color={minimumTrackTintColor} style={trackStyle} length={percentage * 100} vertical={vertical} thickness={trackHeight} />
-      <Thumb size={thumbSize} color={thumbTintColor} trackHeight={trackHeight} style={thumbStyle} />
+      <Thumb size={thumbSize} color={thumbTintColor} trackHeight={thumbRadius} style={thumbStyle} />
       <Track color={maximumTrackTintColor} style={trackStyle} length={(1 - percentage) * 100} vertical={vertical} thickness={trackHeight} />
     </ResponderView>
   )
