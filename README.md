@@ -36,6 +36,8 @@ import { Slider } from '@sharcoux/slider'
   thumbTintColor='darkcyan'         // The color of the slider's thumb
   thumbStyle={undefined}            // Override the thumb's style
   trackStyle={undefined}            // Override the tracks' style
+  minTrackStyle={undefined}         // Override the tracks' style for the minimum range
+  maxTrackStyle={undefined}         // Override the tracks' style for the maximum range
   vertical={false}                  // If true, the slider will be drawn vertically
   inverted={false}                  // If true, min value will be on the right, and max on the left
   enabled={true}                    // If false, the slider won't respond to touches anymore
@@ -68,6 +70,9 @@ import { RangeSlider } from '@sharcoux/slider'
   thumbTintColor='darkcyan'         // The color of the slider's thumb
   thumbStyle={undefined}            // Override the thumb's style
   trackStyle={undefined}            // Override the tracks' style
+  minTrackStyle={undefined}         // Override the tracks' style for the minimum range
+  midTrackStyle={undefined}         // Override the tracks' style for the middle range
+  maxTrackStyle={undefined}         // Override the tracks' style for the maximum range
   vertical={false}                  // If true, the slider will be drawn vertically
   inverted={false}                  // If true, min value will be on the right, and max on the left
   enabled={true}                    // If false, the slider won't respond to touches anymore
@@ -88,6 +93,12 @@ In version 5, I removed the Animated API as it cannot work on mobile until [this
 On the other hand, the default implementation should have received a performance boost that would make the Animated version theoretically useless.
 
 I also added a prop `slideOnTap` to define if the slider should change it's value when pressing it, or only on slide.
+
+### Changelog V 5.3.0:
+
+ * new `minTrackStyle` prop on Slider and RangeSlider
+ * new `maxTrackStyle` prop on Slider and RangeSlider
+ * new `midTrackStyle` prop on RangeSlider
 
 ### Changelog V 5.2.0:
 

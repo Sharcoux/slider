@@ -16,6 +16,8 @@ export type SliderProps = RN.ViewProps & {
   thumbTintColor?: RN.ColorValue;
   thumbStyle?: RN.StyleProp<RN.ViewStyle>;
   trackStyle?: RN.StyleProp<RN.ViewStyle>;
+  minTrackStyle?: RN.StyleProp<RN.ViewStyle>;
+  maxTrackStyle?: RN.StyleProp<RN.ViewStyle>;
   style?: RN.StyleProp<RN.ViewStyle>;
   inverted?: boolean;
   vertical?: boolean;
@@ -39,6 +41,8 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     thumbTintColor = 'darkcyan',
     thumbStyle,
     trackStyle,
+    minTrackStyle,
+    maxTrackStyle,
     style,
     inverted = false,
     vertical = false,
@@ -70,14 +74,19 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
   // See https://github.com/Sharcoux/slider/issues/13
   const thumbRadius = Math.min(trackHeight, thumbSize)
 
+  const { minStyle, maxStyle } = React.useMemo(() => ({
+    minStyle: (trackStyle && minTrackStyle) ? [trackStyle, minTrackStyle] : trackStyle || minTrackStyle,
+    maxStyle: (trackStyle && maxTrackStyle) ? [trackStyle, maxTrackStyle] : trackStyle || maxTrackStyle
+  }), [trackStyle, minTrackStyle, maxTrackStyle])
+
   return (
     <ResponderView style={responderStyle} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
       value={value} updateValue={updateValue} onPress={onPress} onMove={onMove} onRelease={onRelease}
       enabled={enabled} vertical={vertical} inverted={inverted} {...others}
     >
-      <Track color={minimumTrackTintColor} style={trackStyle} length={percentage * 100} vertical={vertical} thickness={trackHeight} />
+      <Track color={minimumTrackTintColor} style={minStyle} length={percentage * 100} vertical={vertical} thickness={trackHeight} />
       <Thumb size={thumbSize} color={thumbTintColor} trackHeight={thumbRadius} style={thumbStyle} />
-      <Track color={maximumTrackTintColor} style={trackStyle} length={(1 - percentage) * 100} vertical={vertical} thickness={trackHeight} />
+      <Track color={maximumTrackTintColor} style={maxStyle} length={(1 - percentage) * 100} vertical={vertical} thickness={trackHeight} />
     </ResponderView>
   )
 }
