@@ -27,6 +27,7 @@ export type SliderProps = RN.ViewProps & {
   slideOnTap?: boolean;
   trackHeight?: number;
   thumbSize?: number;
+  thumbImage?: RN.ImageURISource;
   crossingAllowed?: boolean;
   onValueChange?: (range: [number, number]) => void;
   onSlidingStart?: (range: [number, number]) => void;
@@ -54,6 +55,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     slideOnTap = true,
     trackHeight = 4,
     thumbSize = 15,
+    thumbImage,
     minimumRange = step,
     crossingAllowed = false,
     onValueChange,
@@ -93,9 +95,9 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
       enabled={enabled} vertical={vertical} inverted={inverted} {...others}
     >
       <Track color={outboundColor} style={minStyle} length={minTrackPct * 100} vertical={vertical} thickness={trackHeight} />
-      <Thumb size={thumbSize} color={thumbTintColor} trackHeight={thumbRadius} style={thumbStyle} />
+      <Thumb size={thumbSize} color={thumbTintColor} trackHeight={thumbRadius} style={thumbStyle} thumbImage={thumbImage} />
       <Track color={inboundColor} style={midStyle} length={(maxTrackPct - minTrackPct) * 100} vertical={vertical} thickness={trackHeight} />
-      <Thumb size={thumbSize} color={thumbTintColor} trackHeight={thumbRadius} style={thumbStyle} />
+      <Thumb size={thumbSize} color={thumbTintColor} trackHeight={thumbRadius} style={thumbStyle} thumbImage={thumbImage} />
       <Track color={outboundColor} style={maxStyle} length={(1 - maxTrackPct) * 100} vertical={vertical} thickness={trackHeight} />
     </ResponderView>
   )

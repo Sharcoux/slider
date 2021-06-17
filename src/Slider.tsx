@@ -25,6 +25,7 @@ export type SliderProps = RN.ViewProps & {
   slideOnTap?: boolean;
   trackHeight?: number;
   thumbSize?: number;
+  thumbImage?: RN.ImageURISource;
   onValueChange?: (value: number) => void;
   onSlidingStart?: (value: number) => void;
   onSlidingComplete?: (value: number) => void;
@@ -50,6 +51,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     slideOnTap = true,
     trackHeight = 4,
     thumbSize = 15,
+    thumbImage,
     onValueChange,
     onSlidingStart,
     onSlidingComplete,
@@ -85,7 +87,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
       enabled={enabled} vertical={vertical} inverted={inverted} {...others}
     >
       <Track color={minimumTrackTintColor} style={minStyle} length={percentage * 100} vertical={vertical} thickness={trackHeight} />
-      <Thumb size={thumbSize} color={thumbTintColor} trackHeight={thumbRadius} style={thumbStyle} />
+      <Thumb size={thumbSize} color={thumbTintColor} trackHeight={thumbRadius} style={thumbStyle} thumbImage={thumbImage} />
       <Track color={maximumTrackTintColor} style={maxStyle} length={(1 - percentage) * 100} vertical={vertical} thickness={trackHeight} />
     </ResponderView>
   )

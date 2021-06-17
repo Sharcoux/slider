@@ -6,9 +6,10 @@ type Props = {
   color?: RN.ColorValue;
   size?: number;
   trackHeight: number;
+  thumbImage?: RN.ImageURISource
 }
 
-const Thumb = ({ color = 'darkcyan', trackHeight, size = 15, style }: Props) => {
+const Thumb = ({ color = 'darkcyan', trackHeight, size = 15, style, thumbImage }: Props) => {
   const thumbContainerStyle: RN.ViewStyle = React.useMemo(() => ({
     width: trackHeight,
     height: trackHeight,
@@ -35,7 +36,7 @@ const Thumb = ({ color = 'darkcyan', trackHeight, size = 15, style }: Props) => 
   ), [style, size, color])
 
   return <RN.View pointerEvents="none" style={thumbContainerStyle}>
-    <RN.View style={thumbViewStyle} />
+    {thumbImage ? <RN.Image source={thumbImage} style={thumbViewStyle as RN.ImageStyle} /> : <RN.View style={thumbViewStyle} />}
   </RN.View>
 }
 
