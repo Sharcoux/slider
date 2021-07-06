@@ -96,6 +96,11 @@ On the other hand, the default implementation should have received a performance
 
 I also added a prop `slideOnTap` to define if the slider should change it's value when pressing it, or only on slide.
 
+### Changelog V 5.4.0:
+
+ * Adding support for `thumbImage` prop (please report if you encounter an issue with it)
+ * Fix slider breaking when providing your own `onLayout` callback
+
 ### Changelog V 5.3.0:
 
  * new `minTrackStyle` prop on Slider and RangeSlider
