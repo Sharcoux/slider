@@ -29,6 +29,7 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
   style,
   minimumValue, maximumValue, value, step,
   updateValue,
+  onLayout: onLayoutProp,
   ...props
 }: Props, ref) => {
   const containerSize = React.useRef({ width: 0, height: 0 })
@@ -86,7 +87,7 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
   const eventToValue = React.useCallback((event: RN.GestureResponderEvent) => {
     const { locationX: x, locationY: y } = event.nativeEvent
     const offset = isVertical ? y : x
-    const size = containerSize.current ? containerSize.current[isVertical ? 'height' : 'width'] : 1
+    const size = containerSize.current?.[isVertical ? 'height' : 'width'] || 1
     const newValue = inverted
       ? maximumValue - ((maximumValue - minimumValue) * offset) / size
       : minimumValue + ((maximumValue - minimumValue) * offset) / size
@@ -106,9 +107,13 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
   }, [props.onRelease, eventToValue])
 
   const isEnabled = React.useCallback(() => enabled, [enabled])
-  const onLayout = React.useCallback(({ nativeEvent }: RN.LayoutChangeEvent) => (containerSize.current = nativeEvent.layout), [])
+  const onLayout = React.useCallback((event: RN.LayoutChangeEvent) => {
+    onLayoutProp?.(event)
+    containerSize.current = event.nativeEvent.layout
+  }, [])
 
   return <RN.View
+    {...props}
     ref={forwardRef}
     onLayout={onLayout}
     accessibilityActions={accessibility}
@@ -126,7 +131,7 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     onKeyDown={handleAccessibilityKeys}
-    {...props} />
+  />
 })
 
 export default React.memo(ResponderView)
