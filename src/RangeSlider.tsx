@@ -77,8 +77,8 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
 
   const { onPress, onMove, onRelease } = useDrag({ value: range, updateValue: updateClosestValue, onSlidingComplete, onSlidingStart, canMove })
 
-  const minTrackPct = React.useMemo(() => (range[0] - minimumValue) / (maximumValue - minimumValue), [range[0], minimumValue, maximumValue])
-  const maxTrackPct = React.useMemo(() => (range[1] - minimumValue) / (maximumValue - minimumValue), [range[1], minimumValue, maximumValue])
+  const minTrackPct = React.useMemo(() => (range[0] - minimumValue) / ((maximumValue - minimumValue) || 1), [range[0], minimumValue, maximumValue])
+  const maxTrackPct = React.useMemo(() => (range[1] - minimumValue) / ((maximumValue - minimumValue) || 1), [range[1], minimumValue, maximumValue])
 
   // See https://github.com/Sharcoux/slider/issues/13
   const thumbRadius = Math.min(trackHeight, thumbSize)

@@ -65,7 +65,7 @@
     "metro-react-native-babel-preset": "^0.61.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-native": "^0.63.2",
+    "react-native": "^0.64.2",
     "react-native-typescript-transformer": "^1.2.13",
     "react-native-web": "^0.13.4",
     "react-test-renderer": "16.13.1",
