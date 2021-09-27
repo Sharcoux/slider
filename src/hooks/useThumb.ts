@@ -55,7 +55,6 @@ const useThumb = (props: Props) => {
    **/
   const canMove = React.useCallback((newValue: number) => {
     if (slideOnTap) return true
-    else if (step) return Math.abs(newValue - value) < step
     else return Math.abs(newValue - value) / ((maximumValue - minimumValue) || 1) < 0.1
   }, slideOnTap ? [] : [value, step, maximumValue, minimumValue])
 
