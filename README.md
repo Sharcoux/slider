@@ -11,6 +11,8 @@ It also provides support for Range slider (with 2 thumbs).
 
 ![](slider.gif)
 
+Have a look at the troubleshooting section if you encounter any issue, or open an issue.
+
 ## Install
 
 ```
@@ -21,7 +23,7 @@ npm i -S @sharcoux/slider
 
 ### Slider
 
-You can see below the available props with their respective default values
+You can see below the available props with their respective default values.
 
 ```javascript
 import { Slider } from '@sharcoux/slider'
@@ -87,6 +89,16 @@ import { RangeSlider } from '@sharcoux/slider'
   {...props}                        // Add any View Props that will be applied to the container (style, ref, etc)
 />
 ```
+
+## Troubleshooting
+
+- *The slider is hard to move around*
+
+The component is probably too narrow. Increase the height of the component to ensure a correct touch area
+
+- *The value gets wrong when my finger gets out of the slider on Android*
+
+There is an [open issue](https://github.com/facebook/react-native/issues/31843) on React Native project. Meanwhile, you can widen the Slider area using paddings if needed.
 
 ## Slider V5
 
