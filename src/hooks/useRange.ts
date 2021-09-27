@@ -17,6 +17,12 @@ const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumV
   const [min, setMin] = React.useState(propValue[0])
   const [max, setMax] = React.useState(propValue[1])
 
+  // When the propValue changes, we need to update the min and max values accordingly
+  React.useEffect(() => {
+    if (min !== propValue[0]) setMin(propValue[0])
+    if (max !== propValue[1]) setMax(propValue[1])
+  }, [propValue])
+
   // Memoïze the range between renders
   const range = React.useMemo(() => ([min, max] as [number, number]), [min, max])
 
