@@ -77,8 +77,9 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
 
   const { onPress, onMove, onRelease } = useDrag({ value: range, updateValue: updateClosestValue, onSlidingComplete, onSlidingStart, canMove })
 
-  const minTrackPct = React.useMemo(() => (range[0] - minimumValue) / ((maximumValue - minimumValue) || 1), [range[0], minimumValue, maximumValue])
-  const maxTrackPct = React.useMemo(() => (range[1] - minimumValue) / ((maximumValue - minimumValue) || 1), [range[1], minimumValue, maximumValue])
+  const [min, max] = range
+  const minTrackPct = React.useMemo(() => (min - minimumValue) / ((maximumValue - minimumValue) || 1), [min, minimumValue, maximumValue])
+  const maxTrackPct = React.useMemo(() => (max - minimumValue) / ((maximumValue - minimumValue) || 1), [max, minimumValue, maximumValue])
 
   // See https://github.com/Sharcoux/slider/issues/13
   const thumbRadius = Math.min(trackHeight, thumbSize)
@@ -87,11 +88,11 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     minStyle: (trackStyle && minTrackStyle) ? [trackStyle, minTrackStyle] : trackStyle || minTrackStyle,
     midStyle: (trackStyle && midTrackStyle) ? [trackStyle, midTrackStyle] : trackStyle || midTrackStyle,
     maxStyle: (trackStyle && maxTrackStyle) ? [trackStyle, maxTrackStyle] : trackStyle || maxTrackStyle
-  }), [trackStyle, minTrackStyle, maxTrackStyle])
+  }), [trackStyle, minTrackStyle, midTrackStyle, maxTrackStyle])
 
   return (
     <ResponderView style={style} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
-      value={range[1]} updateValue={updateMaxValue} onPress={onPress} onMove={onMove} onRelease={onRelease}
+      value={max} updateValue={updateMaxValue} onPress={onPress} onMove={onMove} onRelease={onRelease}
       enabled={enabled} vertical={vertical} inverted={inverted} {...others}
     >
       <Track color={outboundColor} style={minStyle} length={minTrackPct * 100} vertical={vertical} thickness={trackHeight} />

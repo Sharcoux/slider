@@ -10,7 +10,7 @@ type Props = {
 }
 
 const Track = ({ style, thickness, length, vertical, color = 'grey' }: Props) => {
-  const trackViewStyle = [{
+  const trackViewStyle = React.useMemo<RN.Animated.WithAnimatedValue<RN.StyleProp<RN.ViewStyle>>>(() => [{
     flexGrow: length,
     flexBasis: 0,
     borderRadius: thickness / 2,
@@ -23,7 +23,7 @@ const Track = ({ style, thickness, length, vertical, color = 'grey' }: Props) =>
   {
     [vertical ? 'width' : 'height']: thickness
   },
-  style] as RN.Animated.WithAnimatedValue<RN.StyleProp<RN.ViewStyle>>
+  style], [length, thickness, color, vertical, style])
 
   return <RN.View pointerEvents="none" style={trackViewStyle} />
 }

@@ -10,24 +10,31 @@ type Props<T extends number | [number, number]> = {
 
 /** Creates the interactions with the slider */
 const useDrag = <T extends number | [number, number], >({ value, canMove, updateValue, onSlidingStart, onSlidingComplete }: Props<T>) => {
+  // We need to access the last callback value
+  const onSlidingStartRef = React.useRef(onSlidingStart)
+  onSlidingStartRef.current = onSlidingStart
+  const onSlidingCompleteRef = React.useRef(onSlidingComplete)
+  onSlidingCompleteRef.current = onSlidingComplete
+
   // Emit the events onSlidingStart and onSlidingComplete when we start / stop sliding
   const [sliding, setSliding] = React.useState(false)
-  React.useEffect(() => {
-    if (sliding) onSlidingStart && onSlidingStart(value)
-    else onSlidingComplete && onSlidingComplete(value)
-  }, [sliding])
+  const updateSliding = React.useCallback(slide => {
+    if (slide) onSlidingStartRef.current && onSlidingStartRef.current(value)
+    else onSlidingCompleteRef.current && onSlidingCompleteRef.current(value)
+    setSliding(slide)
+  }, [value])
 
   const onPress = React.useCallback((value: number) => {
     if (!canMove(value)) return
-    setSliding(true)
+    updateSliding(true)
     updateValue(value, 'press')
-  }, [updateValue, setSliding, canMove])
+  }, [canMove, updateSliding, updateValue])
 
   const onRelease = React.useCallback((value: number) => {
     if (!sliding) return
-    setSliding(false)
+    updateSliding(false)
     updateValue(value, 'release')
-  }, [setSliding, sliding])
+  }, [sliding, updateSliding, updateValue])
 
   const onMove = React.useCallback((value: number) => {
     if (sliding) updateValue(value, 'drag')

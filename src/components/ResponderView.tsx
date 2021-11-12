@@ -30,10 +30,14 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
   minimumValue, maximumValue, value, step,
   updateValue,
   onLayout: onLayoutProp,
+  onMove: onMoveProp,
+  onPress: onPressProp,
+  onRelease: onReleaseProp,
   ...props
 }: Props, ref) => {
   const containerSize = React.useRef({ width: 0, height: 0 })
-  const forwardRef = ref || React.useRef<RN.View>(null)
+  const fallbackRef = React.useRef<RN.View>(null)
+  const forwardRef = ref || fallbackRef
   const round = useRounding({ step, minimumValue, maximumValue })
 
   // We calculate the style of the container
@@ -92,25 +96,25 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
       ? maximumValue - ((maximumValue - minimumValue) * offset) / size
       : minimumValue + ((maximumValue - minimumValue) * offset) / size
     return round(newValue)
-  }, [round, maximumValue, minimumValue])
+  }, [isVertical, inverted, maximumValue, minimumValue, round])
 
   const onMove = React.useCallback((event: RN.GestureResponderEvent) => {
-    props.onMove(eventToValue(event))
-  }, [props.onMove, eventToValue])
+    onMoveProp(eventToValue(event))
+  }, [eventToValue, onMoveProp])
 
   const onPress = React.useCallback((event: RN.GestureResponderEvent) => {
-    props.onPress(eventToValue(event))
-  }, [props.onPress, eventToValue])
+    onPressProp(eventToValue(event))
+  }, [eventToValue, onPressProp])
 
   const onRelease = React.useCallback((event: RN.GestureResponderEvent) => {
-    props.onRelease(eventToValue(event))
-  }, [props.onRelease, eventToValue])
+    onReleaseProp(eventToValue(event))
+  }, [eventToValue, onReleaseProp])
 
   const isEnabled = React.useCallback(() => enabled, [enabled])
   const onLayout = React.useCallback((event: RN.LayoutChangeEvent) => {
     onLayoutProp?.(event)
     containerSize.current = event.nativeEvent.layout
-  }, [])
+  }, [onLayoutProp])
 
   return <RN.View
     {...props}

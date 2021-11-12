@@ -16,16 +16,6 @@ const useThumb = (props: Props) => {
   const [value, setValue] = React.useState(propValue || minimumValue) // The value desired
   const round = useRounding({ step, minimumValue, maximumValue })
 
-  // Update the value on bounds change
-  React.useLayoutEffect(() => {
-    updateValue(value)
-  }, [step, minimumValue, maximumValue])
-
-  // Update the value on manual value change
-  React.useLayoutEffect(() => {
-    updateValue(propValue)
-  }, [propValue])
-
   // This block will group close call to setValue into one single update to greatly improve perfs
   const [updated, setUpdated] = React.useState(false)
   const nextValue = React.useRef(value)
@@ -36,18 +26,27 @@ const useThumb = (props: Props) => {
     }
   }, [updated])
 
+  // We need to access the last callback value
+  const onValueChangeRef = React.useRef(onValueChange)
+  onValueChangeRef.current = onValueChange
+
   /** Update the thumb value */
   const updateValue = React.useCallback((newValue: number) => {
     const rounded = round(newValue)
+    if (rounded !== nextValue.current) setUpdated(true)
     nextValue.current = rounded
-    if (!updated && rounded !== value) setUpdated(true)
-  }, [round, updated, setUpdated])
+  }, [round])
+
+  // Update the value on bounds change
+  React.useLayoutEffect(() => {
+    updateValue(value)
+  }, [step, minimumValue, maximumValue, propValue, updateValue, value])
 
   /** Call onValueChange when the user changed the value */
   const userUpdateValue = React.useCallback((newValue: number) => {
     updateValue(newValue)
-    onValueChange && onValueChange(nextValue.current)
-  }, [updateValue, onValueChange])
+    onValueChangeRef.current && onValueChangeRef.current(nextValue.current)
+  }, [updateValue])
 
   /**
    * Indicates whether we accept to move to the specified position.
@@ -56,6 +55,7 @@ const useThumb = (props: Props) => {
   const canMove = React.useCallback((newValue: number) => {
     if (slideOnTap) return true
     else return Math.abs(newValue - value) / ((maximumValue - minimumValue) || 1) < 0.1
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, slideOnTap ? [] : [value, step, maximumValue, minimumValue])
 
   return { updateValue: userUpdateValue, canMove, value }
