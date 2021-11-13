@@ -24,7 +24,6 @@ const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumV
   const updateRange = React.useCallback((rangeUpdate: React.SetStateAction<[number, number]>) => {
     setRange(oldRange => {
       const newRange = typeof rangeUpdate === 'function' ? rangeUpdate(oldRange) : rangeUpdate
-      console.error(new Error(newRange + ''))
       // If no change, we return the previous object to avoir rerenders
       if (oldRange[0] === newRange[0] && oldRange[1] === newRange[1]) return oldRange
       // We call onValueChange as soon as the setState is over
