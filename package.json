@@ -1,6 +1,6 @@
 {
   "name": "@sharcoux/slider",
-  "version": "5.6.0",
+  "version": "5.6.1",
   "homepage": "https://github.com/Sharcoux/slider",
   "description": "Lightweight slider for React-Native and React-Native-Web. A Range slider is included",
   "keywords": [
