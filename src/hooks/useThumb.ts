@@ -39,8 +39,13 @@ const useThumb = (props: Props) => {
 
   // Update the value on bounds change
   React.useLayoutEffect(() => {
-    updateValue(value)
-  }, [step, minimumValue, maximumValue, propValue, updateValue, value])
+    updateValue(nextValue.current)
+  }, [step, minimumValue, maximumValue, updateValue])
+
+  // Update the value on propchange
+  React.useLayoutEffect(() => {
+    updateValue(propValue)
+  }, [propValue, updateValue])
 
   /** Call onValueChange when the user changed the value */
   const userUpdateValue = React.useCallback((newValue: number) => {
