@@ -3,6 +3,33 @@ import { View, Text, StyleSheet, AppRegistry, Platform } from 'react-native'
 import { Slider, RangeSlider } from './src'
 import { name as appName } from './app.json'
 
+const styles = StyleSheet.create({
+  category: {
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },
+  slider: {
+    width: 200,
+    height: 40,
+    flexGrow: 0,
+    borderWidth: 1,
+    borderColor: 'black',
+    borderStyle: 'solid'
+  },
+  verticalSlider: {
+    height: 200,
+    width: 40,
+    flexGrow: 0,
+    borderWidth: 1,
+    borderColor: 'black',
+    borderStyle: 'solid'
+  },
+  title: {
+    fontSize: 28,
+    margin: 20
+  }
+})
+
 const App = () => {
   const [value, setValue] = React.useState(0)
   const [range, setRange] = React.useState<[number, number]>([0, 0])
@@ -97,33 +124,6 @@ const App = () => {
     </View>
   </View>
 }
-
-const styles = StyleSheet.create({
-  category: {
-    flexDirection: 'row',
-    justifyContent: 'space-around'
-  },
-  slider: {
-    width: 200,
-    height: 40,
-    flexGrow: 0,
-    borderWidth: 1,
-    borderColor: 'black',
-    borderStyle: 'solid'
-  },
-  verticalSlider: {
-    height: 200,
-    width: 40,
-    flexGrow: 0,
-    borderWidth: 1,
-    borderColor: 'black',
-    borderStyle: 'solid'
-  },
-  title: {
-    fontSize: 28,
-    margin: 20
-  }
-})
 
 AppRegistry.registerComponent(appName, () => App)
 

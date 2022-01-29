@@ -19,7 +19,7 @@ module.exports = {
   },
   devtool: 'source-map',
   devServer: {
-    contentBase: path.resolve(__dirname, 'demo'),
+    static: path.resolve(__dirname, 'demo'),
     compress: true,
     port: 9000
   },

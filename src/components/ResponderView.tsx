@@ -138,4 +138,6 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
   />
 })
 
+ResponderView.displayName = 'ResponderView'
+
 export default React.memo(ResponderView)
