@@ -102,11 +102,10 @@ There is an [open issue](https://github.com/facebook/react-native/issues/31843) 
 
 ## Slider V5
 
-In version 5, I removed the Animated API as it cannot work on mobile until [this issue](https://github.com/facebook/react-native/pull/27506) is fixed by Facebook.
+### Changelog V 5.6.3:
 
-On the other hand, the default implementation should have received a performance boost that would make the Animated version theoretically useless.
-
-I also added a prop `slideOnTap` to define if the slider should change it's value when pressing it, or only on slide.
+ * Fix Slider value not updating when provided through props
+ * Fix a performance issue
 
 ### Changelog V 5.5.1:
 
