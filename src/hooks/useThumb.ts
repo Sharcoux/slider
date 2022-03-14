@@ -37,15 +37,19 @@ const useThumb = (props: Props) => {
     nextValue.current = rounded
   }, [round])
 
+  // We don't want to update the value when updateValue changes
+  const updateValueRef = React.useRef(updateValue)
+  updateValueRef.current = updateValue
+
   // Update the value on bounds change
   React.useLayoutEffect(() => {
-    updateValue(nextValue.current)
-  }, [step, minimumValue, maximumValue, updateValue])
+    updateValueRef.current(nextValue.current)
+  }, [step, minimumValue, maximumValue])
 
   // Update the value on propchange
   React.useLayoutEffect(() => {
-    updateValue(propValue)
-  }, [propValue, updateValue])
+    updateValueRef.current(propValue)
+  }, [propValue])
 
   /** Call onValueChange when the user changed the value */
   const userUpdateValue = React.useCallback((newValue: number) => {

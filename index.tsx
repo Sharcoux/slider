@@ -33,6 +33,8 @@ const styles = StyleSheet.create({
 const App = () => {
   const [value, setValue] = React.useState(0)
   const [range, setRange] = React.useState<[number, number]>([0, 0])
+  const [max, setMax] = React.useState(1)
+  React.useEffect(() => { setInterval(() => setMax(max => max + 1), 2000) }, [])
   return <View>
     <Text style={styles.title}>Raw Slider</Text>
     <View style={styles.category}>
@@ -44,7 +46,7 @@ const App = () => {
         inverted={true}
         slideOnTap={false}
         minimumValue={0}
-        maximumValue={1}
+        maximumValue={max}
       />
       <Slider
         style={styles.slider}
@@ -74,7 +76,7 @@ const App = () => {
         onValueChange={value => console.log('change:', value)}
         style={styles.slider}
         minimumValue={0}
-        maximumValue={1}
+        maximumValue={max}
         step={0.1}
       />
     </View>
