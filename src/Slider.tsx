@@ -31,6 +31,15 @@ export type SliderProps = RN.ViewProps & {
   onSlidingComplete?: (value: number) => void;
 }
 
+const styleSheet = RN.StyleSheet.create({
+  vertical: {
+    paddingHorizontal: 10
+  },
+  horizontal: {
+    paddingVertical: 10
+  }
+})
+
 const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwardedRef) => {
   const {
     minimumValue = 0,
@@ -71,7 +80,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
 
   const percentage = React.useMemo(() => (value - minimumValue) / ((maximumValue - minimumValue) || 1), [value, minimumValue, maximumValue])
   // We add a default padding to ensure that the responder view has enough space to recognize the touches
-  const responderStyle = React.useMemo(() => [{ [vertical ? 'paddingHorizontal' : 'paddingVertical']: 10 }, style], [style, vertical])
+  const responderStyle = React.useMemo(() => [styleSheet[vertical ? 'vertical' : 'horizontal'], style], [style, vertical])
 
   // See https://github.com/Sharcoux/slider/issues/13
   const thumbRadius = Math.min(trackHeight, thumbSize)

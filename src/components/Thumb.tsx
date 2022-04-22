@@ -9,18 +9,21 @@ type Props = {
   thumbImage?: RN.ImageURISource
 }
 
-const Thumb = ({ color = 'darkcyan', trackHeight, size = 15, style, thumbImage }: Props) => {
-  const thumbContainerStyle: RN.ViewStyle = React.useMemo(() => ({
-    width: trackHeight,
-    height: trackHeight,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1
-  }), [trackHeight])
+function getContainerStyle (trackHeight: number) {
+  return RN.StyleSheet.create({
+    container: {
+      width: trackHeight,
+      height: trackHeight,
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 1
+    }
+  }).container
+}
 
-  /** We want to cover the end of the track */
-  const thumbViewStyle = React.useMemo(() => RN.StyleSheet.compose(
-    {
+function getThumbStyle (size: number, color: RN.ColorValue) {
+  return RN.StyleSheet.create({
+    thumb: {
       width: size,
       height: size,
       backgroundColor: color,
@@ -31,9 +34,15 @@ const Thumb = ({ color = 'darkcyan', trackHeight, size = 15, style, thumbImage }
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       userSelect: 'none'
-    },
-    style
-  ), [style, size, color])
+    }
+  }).thumb
+}
+
+const Thumb = ({ color = 'darkcyan', trackHeight, size = 15, style, thumbImage }: Props) => {
+  const thumbContainerStyle: RN.ViewStyle = React.useMemo(() => getContainerStyle(trackHeight), [trackHeight])
+
+  /** We want to cover the end of the track */
+  const thumbViewStyle = React.useMemo(() => [getThumbStyle(size, color), style], [style, size, color])
 
   return <RN.View pointerEvents="none" style={thumbContainerStyle}>
     {thumbImage ? <RN.Image source={thumbImage} style={thumbViewStyle as RN.ImageStyle} /> : <RN.View style={thumbViewStyle} />}

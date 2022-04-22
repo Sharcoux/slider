@@ -102,6 +102,12 @@ There is an [open issue](https://github.com/facebook/react-native/issues/31843) 
 
 ## Slider V5
 
+### Changelog V 6.0.0:
+
+ * Call prevent default on mouse events to avoid weird interactions
+ * Improve performances
+ * Add a padding around the RangeSlider too
+
 ### Changelog V 5.6.3:
 
  * Fix Slider value not updating when provided through props

@@ -34,6 +34,15 @@ export type SliderProps = RN.ViewProps & {
   onSlidingComplete?: (range: [number, number]) => void;
 }
 
+const styleSheet = RN.StyleSheet.create({
+  vertical: {
+    paddingHorizontal: 10
+  },
+  horizontal: {
+    paddingVertical: 10
+  }
+})
+
 const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwardedRef) => {
   const {
     minimumValue = 0,
@@ -80,6 +89,8 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
   const [min, max] = range
   const minTrackPct = React.useMemo(() => (min - minimumValue) / ((maximumValue - minimumValue) || 1), [min, minimumValue, maximumValue])
   const maxTrackPct = React.useMemo(() => (max - minimumValue) / ((maximumValue - minimumValue) || 1), [max, minimumValue, maximumValue])
+  // We add a default padding to ensure that the responder view has enough space to recognize the touches
+  const responderStyle = React.useMemo(() => [styleSheet[vertical ? 'vertical' : 'horizontal'], style], [style, vertical])
 
   // See https://github.com/Sharcoux/slider/issues/13
   const thumbRadius = Math.min(trackHeight, thumbSize)
@@ -91,7 +102,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
   }), [trackStyle, minTrackStyle, midTrackStyle, maxTrackStyle])
 
   return (
-    <ResponderView style={style} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
+    <ResponderView style={responderStyle} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
       value={max} updateValue={updateMaxValue} onPress={onPress} onMove={onMove} onRelease={onRelease}
       enabled={enabled} vertical={vertical} inverted={inverted} {...others}
     >

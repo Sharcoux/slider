@@ -24,6 +24,32 @@ const accessibility = [
   { name: 'decrement', label: 'decrement' }
 ]
 
+const styleSheet = RN.StyleSheet.create({
+  view: {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 'auto',
+    alignItems: 'center',
+    cursor: 'pointer',
+    // This is for web
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    userSelect: 'none'
+  },
+  row: {
+    flexDirection: 'row'
+  },
+  rowReverse: {
+    flexDirection: 'row-reverse'
+  },
+  column: {
+    flexDirection: 'column'
+  },
+  columnReverse: {
+    flexDirection: 'column-reverse'
+  }
+})
+
 const ResponderView = React.forwardRef<RN.View, Props>(({
   vertical, inverted, enabled,
   style,
@@ -43,18 +69,8 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
   // We calculate the style of the container
   const isVertical = React.useMemo(() => vertical || (style && (RN.StyleSheet.flatten(style).flexDirection || '').startsWith('column')), [vertical, style])
   const containerStyle = React.useMemo(() => ([
-    {
-      flexGrow: 1,
-      flexShrink: 1,
-      flexBasis: 'auto',
-      flexDirection: (isVertical ? 'column' : 'row') + (inverted ? '-reverse' : ''),
-      // For web
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      userSelect: 'none',
-      alignItems: 'center',
-      cursor: 'pointer'
-    } as RN.ViewStyle,
+    styleSheet.view,
+    styleSheet[(isVertical ? 'column' : 'row') + (inverted ? 'Reverse' : '') as 'row'],
     style
   ]), [style, isVertical, inverted])
 
@@ -100,14 +116,17 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
 
   const onMove = React.useCallback((event: RN.GestureResponderEvent) => {
     onMoveProp(eventToValue(event))
+    event.preventDefault()
   }, [eventToValue, onMoveProp])
 
   const onPress = React.useCallback((event: RN.GestureResponderEvent) => {
     onPressProp(eventToValue(event))
+    event.preventDefault()
   }, [eventToValue, onPressProp])
 
   const onRelease = React.useCallback((event: RN.GestureResponderEvent) => {
     onReleaseProp(eventToValue(event))
+    event.preventDefault()
   }, [eventToValue, onReleaseProp])
 
   const isEnabled = React.useCallback(() => enabled, [enabled])

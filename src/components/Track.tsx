@@ -9,21 +9,26 @@ type Props = {
   length: number;
 }
 
+function getTrackStyle (length: number, thickness: number, color: RN.ColorValue, vertical: boolean) {
+  return RN.StyleSheet.create({
+    thumb: {
+      flexGrow: length,
+      flexBasis: 0,
+      borderRadius: thickness / 2,
+      backgroundColor: color,
+      // This is for web
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      userSelect: 'none',
+      [vertical ? 'width' : 'height']: thickness
+    }
+  }).thumb
+}
+
 const Track = ({ style, thickness, length, vertical, color = 'grey' }: Props) => {
-  const trackViewStyle = React.useMemo<RN.StyleProp<RN.ViewStyle>>(() => [{
-    flexGrow: length,
-    flexBasis: 0,
-    borderRadius: thickness / 2,
-    backgroundColor: color,
-    // This is for web
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    userSelect: 'none'
-  },
-  {
-    [vertical ? 'width' : 'height']: thickness
-  },
-  style], [length, thickness, color, vertical, style])
+  const trackViewStyle = React.useMemo<RN.StyleProp<RN.ViewStyle>>(() => [
+    getTrackStyle(length, thickness, color, vertical), style
+  ], [length, thickness, color, vertical, style])
 
   return <RN.View pointerEvents="none" style={trackViewStyle} />
 }
