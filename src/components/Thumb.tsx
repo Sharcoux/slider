@@ -29,11 +29,7 @@ function getThumbStyle (size: number, color: RN.ColorValue) {
       backgroundColor: color,
       zIndex: 1,
       borderRadius: size / 2,
-      overflow: 'hidden',
-      // This is for web
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      userSelect: 'none'
+      overflow: 'hidden'
     }
   }).thumb
 }
