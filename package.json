@@ -28,7 +28,7 @@
     "start": "react-native start",
     "lint": "eslint --fix .",
     "build": "webpack",
-    "release": "release-it",
+    "release": "npm run prepare && release-it",
     "web": "webpack serve --open --mode development"
   },
   "peerDependencies": {
