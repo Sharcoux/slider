@@ -19,7 +19,7 @@ function getTrackStyle (length: number, thickness: number, color: RN.ColorValue,
       // This is for web
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      userSelect: 'none',
+      ...(RN.Platform.OS === 'web' ? { userSelect: 'none' } : {}),
       [vertical ? 'width' : 'height']: thickness
     }
   }).thumb

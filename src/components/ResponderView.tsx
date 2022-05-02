@@ -30,11 +30,13 @@ const styleSheet = RN.StyleSheet.create({
     flexShrink: 1,
     flexBasis: 'auto',
     alignItems: 'center',
-    cursor: 'pointer',
-    // This is for web
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    userSelect: 'none'
+    ...(RN.Platform.OS === 'web' ? {
+      cursor: 'pointer',
+      // This is for web
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      userSelect: 'none'
+    } : {})
   },
   row: {
     flexDirection: 'row'
