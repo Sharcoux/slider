@@ -30,6 +30,10 @@ const styles = StyleSheet.create({
   }
 })
 
+const CustomThumb = ({ value }: { value: number }) => {
+  return <Text>{value}</Text>
+}
+
 const App = () => {
   const [value, setValue] = React.useState(0)
   const [range, setRange] = React.useState<[number, number]>([0, 0])
@@ -53,6 +57,7 @@ const App = () => {
         minimumValue={0}
         maximumValue={100}
         value={value}
+        CustomThumb={CustomThumb}
         step={10}
         onValueChange={setValue}
         minimumTrackTintColor="blue"
@@ -96,8 +101,10 @@ const App = () => {
         style={styles.slider}
         minimumValue={0}
         maximumValue={10}
+        crossingAllowed
         range={range}
         step={1}
+        CustomThumb={CustomThumb}
         onValueChange={setRange}
         outboundColor="blue"
         inboundColor="red"

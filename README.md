@@ -50,6 +50,7 @@ import { Slider } from '@sharcoux/slider'
   onValueChange={undefined}         // Called each time the value changed. The type is (value: number) => void
   onSlidingStart={undefined}        // Called when the slider is pressed. The type is (value: number) => void
   onSlidingComplete={undefined}     // Called when the press is released. The type is (value: number) => void
+  CustomThumb={undefined}           // Provide your own component to render the thumb. The type is a component: ({ value: number }) => JSX.Element
   {...props}                        // Add any View Props that will be applied to the container (style, ref, etc)
 />
 ```
@@ -86,6 +87,7 @@ import { RangeSlider } from '@sharcoux/slider'
   onValueChange={undefined}         // Called each time the value changed. The type is (range: [number, number]) => void
   onSlidingStart={undefined}        // Called when the slider is pressed. The type is (range: [number, number]) => void
   onSlidingComplete={undefined}     // Called when the press is released. The type is (range: [number, number]) => void
+  CustomThumb={undefined}           // Provide your own component to render the thumb. The type is a component: ({ value: number, thumb: 'min' | 'max' }) => JSX.Element
   {...props}                        // Add any View Props that will be applied to the container (style, ref, etc)
 />
 ```

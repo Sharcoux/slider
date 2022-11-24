@@ -2,7 +2,7 @@ import React from 'react'
 import * as RN from 'react-native'
 import useRange from './hooks/useRange'
 import Track from './components/Track'
-import Thumb from './components/Thumb'
+import Thumb, { ThumbProps } from './components/Thumb'
 import ResponderView from './components/ResponderView'
 import useDrag from './hooks/useDrag'
 
@@ -32,6 +32,7 @@ export type SliderProps = RN.ViewProps & {
   onValueChange?: (range: [number, number]) => void;
   onSlidingStart?: (range: [number, number]) => void;
   onSlidingComplete?: (range: [number, number]) => void;
+  CustomThumb?: React.ComponentType<ThumbProps & { value: number; thumb: 'min' | 'max' }>;
 }
 
 const styleSheet = RN.StyleSheet.create({
@@ -44,10 +45,11 @@ const styleSheet = RN.StyleSheet.create({
 })
 
 const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwardedRef) => {
+  const defaultValue = React.useMemo<[number, number]>(() => [props.minimumValue || 0, props.minimumValue || 0], [props.minimumValue])
   const {
     minimumValue = 0,
     maximumValue = 1,
-    range: propValue = [minimumValue, minimumValue],
+    range: propValue = defaultValue,
     step = 0,
     outboundColor = 'grey',
     inboundColor = 'blue',
@@ -70,6 +72,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     onValueChange,
     onSlidingStart,
     onSlidingComplete,
+    CustomThumb,
     ...others
   } = props
 
@@ -101,15 +104,23 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     maxStyle: (trackStyle && maxTrackStyle) ? [trackStyle, maxTrackStyle] : trackStyle || maxTrackStyle
   }), [trackStyle, minTrackStyle, midTrackStyle, maxTrackStyle])
 
+  const thumbProps = React.useMemo(() => ({
+    size: thumbSize,
+    color: thumbTintColor,
+    trackHeight: thumbRadius,
+    style: thumbStyle,
+    thumbImage: thumbImage
+  }), [thumbImage, thumbRadius, thumbSize, thumbStyle, thumbTintColor])
+
   return (
     <ResponderView style={responderStyle} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
       value={max} updateValue={updateMaxValue} onPress={onPress} onMove={onMove} onRelease={onRelease}
       enabled={enabled} vertical={vertical} inverted={inverted} {...others}
     >
       <Track color={outboundColor} style={minStyle} length={minTrackPct * 100} vertical={vertical} thickness={trackHeight} />
-      <Thumb size={thumbSize} color={thumbTintColor} trackHeight={thumbRadius} style={thumbStyle} thumbImage={thumbImage} />
+      {CustomThumb ? <CustomThumb {...thumbProps} value={min} thumb='min' /> : <Thumb {...thumbProps} />}
       <Track color={inboundColor} style={midStyle} length={(maxTrackPct - minTrackPct) * 100} vertical={vertical} thickness={trackHeight} />
-      <Thumb size={thumbSize} color={thumbTintColor} trackHeight={thumbRadius} style={thumbStyle} thumbImage={thumbImage} />
+      {CustomThumb ? <CustomThumb {...thumbProps} value={max} thumb='max' /> : <Thumb {...thumbProps} />}
       <Track color={outboundColor} style={maxStyle} length={(1 - maxTrackPct) * 100} vertical={vertical} thickness={trackHeight} />
     </ResponderView>
   )

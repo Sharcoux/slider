@@ -2,7 +2,7 @@ import React from 'react'
 import * as RN from 'react-native'
 import useThumb from './hooks/useThumb'
 import Track from './components/Track'
-import Thumb from './components/Thumb'
+import Thumb, { ThumbProps } from './components/Thumb'
 import ResponderView from './components/ResponderView'
 import useDrag from './hooks/useDrag'
 
@@ -29,6 +29,7 @@ export type SliderProps = RN.ViewProps & {
   onValueChange?: (value: number) => void;
   onSlidingStart?: (value: number) => void;
   onSlidingComplete?: (value: number) => void;
+  CustomThumb?: React.ComponentType<ThumbProps & { value: number }>;
 }
 
 const styleSheet = RN.StyleSheet.create({
@@ -64,6 +65,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     onValueChange,
     onSlidingStart,
     onSlidingComplete,
+    CustomThumb,
     ...others
   } = props
 
@@ -90,13 +92,21 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     maxStyle: (trackStyle && maxTrackStyle) ? [trackStyle, maxTrackStyle] : trackStyle || maxTrackStyle
   }), [trackStyle, minTrackStyle, maxTrackStyle])
 
+  const thumbProps = React.useMemo(() => ({
+    size: thumbSize,
+    color: thumbTintColor,
+    trackHeight: thumbRadius,
+    style: thumbStyle,
+    thumbImage: thumbImage
+  }), [thumbImage, thumbRadius, thumbSize, thumbStyle, thumbTintColor])
+
   return (
     <ResponderView style={responderStyle} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
       value={value} updateValue={updateValue} onPress={onPress} onMove={onMove} onRelease={onRelease}
       enabled={enabled} vertical={vertical} inverted={inverted} {...others}
     >
       <Track color={minimumTrackTintColor} style={minStyle} length={percentage * 100} vertical={vertical} thickness={trackHeight} />
-      <Thumb size={thumbSize} color={thumbTintColor} trackHeight={thumbRadius} style={thumbStyle} thumbImage={thumbImage} />
+      {CustomThumb ? <CustomThumb {...thumbProps} value={value} /> : <Thumb {...thumbProps} />}
       <Track color={maximumTrackTintColor} style={maxStyle} length={(1 - percentage) * 100} vertical={vertical} thickness={trackHeight} />
     </ResponderView>
   )
