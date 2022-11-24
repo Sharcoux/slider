@@ -1,4 +1,5 @@
 import React from 'react'
+import { useEvent } from './useEvent'
 
 type Props<T extends number | [number, number]> = {
   value: T;
@@ -18,27 +19,27 @@ const useDrag = <T extends number | [number, number], >({ value, canMove, update
 
   // Emit the events onSlidingStart and onSlidingComplete when we start / stop sliding
   const [sliding, setSliding] = React.useState(false)
-  const updateSliding = React.useCallback(slide => {
+  const updateSliding = useEvent(slide => {
     if (slide) onSlidingStartRef.current && onSlidingStartRef.current(value)
     else onSlidingCompleteRef.current && onSlidingCompleteRef.current(value)
     setSliding(slide)
-  }, [value])
+  })
 
-  const onPress = React.useCallback((value: number) => {
+  const onPress = useEvent((value: number) => {
     if (!canMove(value)) return
     updateSliding(true)
     updateValue(value, 'press')
-  }, [canMove, updateSliding, updateValue])
+  })
 
-  const onRelease = React.useCallback((value: number) => {
+  const onRelease = useEvent((value: number) => {
     if (!sliding) return
     updateSliding(false)
     updateValue(value, 'release')
-  }, [sliding, updateSliding, updateValue])
+  })
 
-  const onMove = React.useCallback((value: number) => {
+  const onMove = useEvent((value: number) => {
     if (sliding) updateValue(value, 'drag')
-  }, [updateValue, sliding])
+  })
 
   return { onPress, onRelease, onMove }
 }

@@ -1,4 +1,4 @@
-import React from 'react'
+import { useEvent } from './useEvent'
 
 type Props = {
   step: number;
@@ -12,7 +12,7 @@ type Props = {
  * we make sure that it still fits within the bounds.
 */
 const useRounding = ({ step, minimumValue, maximumValue }: Props) => {
-  return React.useCallback((value: number) => {
+  return useEvent((value: number) => {
     // We tolerate not rounded values when they exactly match the bounds
     if (value === minimumValue || value === maximumValue) return value
     // Caluculate the precision we need to represent the values
@@ -27,7 +27,7 @@ const useRounding = ({ step, minimumValue, maximumValue }: Props) => {
       Math.min(hardRounded, maximumValue)
     )
     return withinBounds
-  }, [step, minimumValue, maximumValue])
+  })
 }
 
 export default useRounding

@@ -1,4 +1,5 @@
 import React from 'react'
+import { useEvent } from './useEvent'
 import useThumb from './useThumb'
 
 type Props = {
@@ -17,31 +18,31 @@ const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumV
   const [range, setRange] = React.useState(propValue)
   const [minProp, maxProp] = propValue
 
-  // We need to access the last callback value
-  const onValueChangeRef = React.useRef(onValueChange)
-  onValueChangeRef.current = onValueChange
-
-  const updateRange = React.useCallback((rangeUpdate: React.SetStateAction<[number, number]>) => {
+  const updateRange = useEvent((rangeUpdate: React.SetStateAction<[number, number]>, fireEvent?: boolean) => {
     setRange(oldRange => {
       const newRange = typeof rangeUpdate === 'function' ? rangeUpdate(oldRange) : rangeUpdate
       // If no change, we return the previous object to avoir rerenders
       if (oldRange[0] === newRange[0] && oldRange[1] === newRange[1]) return oldRange
       // We call onValueChange as soon as the setState is over
-      setTimeout(() => onValueChangeRef.current && onValueChangeRef.current(newRange), 0)
+      if (fireEvent && onValueChange) setTimeout(() => onValueChange(newRange), 0)
       return newRange
     })
-  }, [])
+  })
 
-  // When the propValue changes, we need to update the min and max values accordingly
-  React.useEffect(() => { updateRange([minProp, maxProp]) }, [minProp, maxProp, updateRange])
+  const userUpdateRange = useEvent((newRange: React.SetStateAction<[number, number]>) => updateRange(newRange, true))
 
-  const updateMin = React.useCallback((newMin: number) => updateRange(([, oldMax]) => [newMin, oldMax]), [updateRange])
-  const updateMax = React.useCallback((newMax: number) => updateRange(([oldMin]) => [oldMin, newMax]), [updateRange])
+  // Update the value on bounds or prop change
+  React.useEffect(() => {
+    updateRange(propValue)
+  }, [step, minimumValue, maximumValue, updateRange, propValue])
+
+  const updateMin = useEvent((newMin: number) => userUpdateRange(([, oldMax]) => [newMin, oldMax]))
+  const updateMax = useEvent((newMax: number) => userUpdateRange(([oldMin]) => [oldMin, newMax]))
 
   // Min value thumb
   const { updateValue: updateMinValue, canMove: canMoveMin } = useThumb({
     minimumValue,
-    maximumValue: range[1] - minimumRange,
+    maximumValue: range[1] - (crossingAllowed ? 0 : minimumRange),
     value: minProp,
     step,
     slideOnTap,
@@ -50,7 +51,7 @@ const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumV
 
   // Max value thumb
   const { updateValue: updateMaxValue, canMove: canMoveMax } = useThumb({
-    minimumValue: range[0] + minimumRange,
+    minimumValue: range[0] + (crossingAllowed ? 0 : minimumRange),
     maximumValue,
     value: maxProp,
     step,
@@ -61,21 +62,27 @@ const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumV
   const currentThumb = React.useRef<'min' | 'max'>()
 
   // Method to update the lower or higher bound according to which one is the closest
-  const updateClosestValue = React.useCallback((value: number, state: 'drag' | 'press' | 'release') => {
+  const updateClosestValue = useEvent((value: number, state: 'press' | 'release' | 'drag') => {
     const [minValue, maxValue] = range
+    let isMinClosest = false
     // When moving a thumb, we don't want to let it cross the other thumb
-    const isMinClosest = (currentThumb.current && !crossingAllowed)
-      ? currentThumb.current === 'min'
-      : Math.abs(value - minValue) < Math.abs(value - maxValue)
+    if (currentThumb.current && !crossingAllowed) isMinClosest = currentThumb.current === 'min'
+    else if (!currentThumb.current) isMinClosest = Math.abs(value - minValue) < Math.abs(value - maxValue)
+    // if the current thumb is the min, we keep it as long as it's below the max
+    else if (currentThumb.current === 'min') isMinClosest = value <= maxValue
+    // Otherwise, if we hold the max thumb, we switch only if the value is below the min
+    else isMinClosest = value < minValue
+
+    // We update the state accordingly
     isMinClosest ? updateMinValue(value) : updateMaxValue(value)
     if (state === 'release') currentThumb.current = undefined // We release the thumb
-    else if (state === 'press') currentThumb.current = isMinClosest ? 'min' : 'max' // We set the thumb being currently moved
+    else currentThumb.current = isMinClosest ? 'min' : 'max' // We set the thumb being currently moved
     return isMinClosest ? [value, maxValue] : [minValue, value]
-  }, [range, crossingAllowed, updateMinValue, updateMaxValue])
+  })
 
-  const canMove = React.useCallback((value: number) => {
+  const canMove = useEvent((value: number) => {
     return canMoveMax(value) || canMoveMin(value)
-  }, [canMoveMin, canMoveMax])
+  })
 
   return { updateMinValue, updateMaxValue, updateClosestValue, canMove, range }
 }

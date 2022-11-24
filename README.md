@@ -1,7 +1,7 @@
 # React Native Slider
 
 This lightweight version of a slider is fully compatible with React-Native and React-Native-Web.
-It also provides support for Range slider (with 2 thumbs).
+It also provides support for Range slider (with 2 thumbs) and custom thumb rendering.
 
  * **Same API** as @react-native-community/slider (with some more features of course!)
  * **lightweight**
@@ -103,6 +103,12 @@ The component is probably too narrow. Increase the height of the component to en
 There is an [open issue](https://github.com/facebook/react-native/issues/31843) on React Native project. Meanwhile, you can widen the Slider area using paddings if needed.
 
 ## Slider V5
+
+### Changelog V 6.1.0:
+
+ * Add CustomThumb prop to provide your own component to render the thumbs
+ * Fix the crossingAllowed property that was completely broken
+ * Improve performances
 
 ### Changelog V 6.0.0:
 

@@ -15,7 +15,7 @@ module.exports = {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly'
   },
-  ignorePatterns: ['dist'],
+  ignorePatterns: ['dist', 'demo'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {

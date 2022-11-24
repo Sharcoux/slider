@@ -1,7 +1,7 @@
 import React from 'react'
 import * as RN from 'react-native'
 
-type Props = {
+export type ThumbProps = {
   style?: RN.StyleProp<RN.ViewStyle>;
   color?: RN.ColorValue;
   size?: number;
@@ -34,7 +34,7 @@ function getThumbStyle (size: number, color: RN.ColorValue) {
   }).thumb
 }
 
-const Thumb = ({ color = 'darkcyan', trackHeight, size = 15, style, thumbImage }: Props) => {
+const Thumb = ({ color = 'darkcyan', trackHeight, size = 15, style, thumbImage }: ThumbProps) => {
   const thumbContainerStyle: RN.ViewStyle = React.useMemo(() => getContainerStyle(trackHeight), [trackHeight])
 
   /** We want to cover the end of the track */

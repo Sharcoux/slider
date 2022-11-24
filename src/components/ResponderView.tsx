@@ -1,5 +1,6 @@
 import React from 'react'
 import * as RN from 'react-native'
+import { useEvent } from '../hooks/useEvent'
 import useRounding from '../hooks/useRounding'
 
 type Props = RN.ViewProps & {
@@ -30,13 +31,15 @@ const styleSheet = RN.StyleSheet.create({
     flexShrink: 1,
     flexBasis: 'auto',
     alignItems: 'center',
-    ...(RN.Platform.OS === 'web' ? {
-      cursor: 'pointer',
-      // This is for web
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      userSelect: 'none'
-    } : {})
+    ...(RN.Platform.OS === 'web'
+      ? {
+          cursor: 'pointer',
+          // This is for web
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          userSelect: 'none'
+        }
+      : {})
   },
   row: {
     flexDirection: 'row'
@@ -77,7 +80,7 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
   ]), [style, isVertical, inverted])
 
   // Accessibility actions
-  const accessibilityActions = React.useCallback((event: RN.AccessibilityActionEvent) => {
+  const accessibilityActions = useEvent((event: RN.AccessibilityActionEvent) => {
     const tenth = (maximumValue - minimumValue) / 10
     switch (event.nativeEvent.actionName) {
       case 'increment':
@@ -87,8 +90,8 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
         updateValue(value - (step || tenth))
         break
     }
-  }, [maximumValue, minimumValue, updateValue, value, step])
-  const handleAccessibilityKeys = React.useCallback((event: RN.NativeSyntheticEvent<KeyboardEvent>) => {
+  })
+  const handleAccessibilityKeys = useEvent((event: RN.NativeSyntheticEvent<KeyboardEvent>) => {
     const key = event.nativeEvent.key
     switch (key) {
       case 'ArrowUp':
@@ -102,11 +105,11 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
         accessibilityActions(accessibilityEvent)
       } break
     }
-  }, [accessibilityActions])
+  })
   const accessibilityValues = React.useMemo(() => ({ min: minimumValue, max: maximumValue, now: value }), [minimumValue, maximumValue, value])
 
   /** Convert a touch event into it's position on the slider */
-  const eventToValue = React.useCallback((event: RN.GestureResponderEvent) => {
+  const eventToValue = useEvent((event: RN.GestureResponderEvent) => {
     const { locationX: x, locationY: y } = event.nativeEvent
     const offset = isVertical ? y : x
     const size = containerSize.current?.[isVertical ? 'height' : 'width'] || 1
@@ -114,28 +117,28 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
       ? maximumValue - ((maximumValue - minimumValue) * offset) / size
       : minimumValue + ((maximumValue - minimumValue) * offset) / size
     return round(newValue)
-  }, [isVertical, inverted, maximumValue, minimumValue, round])
+  })
 
-  const onMove = React.useCallback((event: RN.GestureResponderEvent) => {
+  const onMove = useEvent((event: RN.GestureResponderEvent) => {
     onMoveProp(eventToValue(event))
     event.preventDefault()
-  }, [eventToValue, onMoveProp])
+  })
 
-  const onPress = React.useCallback((event: RN.GestureResponderEvent) => {
+  const onPress = useEvent((event: RN.GestureResponderEvent) => {
     onPressProp(eventToValue(event))
     event.preventDefault()
-  }, [eventToValue, onPressProp])
+  })
 
-  const onRelease = React.useCallback((event: RN.GestureResponderEvent) => {
+  const onRelease = useEvent((event: RN.GestureResponderEvent) => {
     onReleaseProp(eventToValue(event))
     event.preventDefault()
-  }, [eventToValue, onReleaseProp])
+  })
 
-  const isEnabled = React.useCallback(() => enabled, [enabled])
-  const onLayout = React.useCallback((event: RN.LayoutChangeEvent) => {
+  const isEnabled = useEvent(() => enabled)
+  const onLayout = useEvent((event: RN.LayoutChangeEvent) => {
     onLayoutProp?.(event)
     containerSize.current = event.nativeEvent.layout
-  }, [onLayoutProp])
+  })
 
   return <RN.View
     {...props}
