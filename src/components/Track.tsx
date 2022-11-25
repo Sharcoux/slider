@@ -30,7 +30,7 @@ const Track = ({ style, thickness, length, vertical, color = 'grey' }: Props) =>
     getTrackStyle(length, thickness, color, vertical), style
   ], [length, thickness, color, vertical, style])
 
-  return <RN.View pointerEvents="none" style={trackViewStyle} />
+  return <RN.View style={trackViewStyle} />
 }
 
 export default React.memo(Track)

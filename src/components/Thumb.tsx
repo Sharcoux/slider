@@ -40,7 +40,7 @@ const Thumb = ({ color = 'darkcyan', trackHeight, size = 15, style, thumbImage }
   /** We want to cover the end of the track */
   const thumbViewStyle = React.useMemo(() => [getThumbStyle(size, color), style], [style, size, color])
 
-  return <RN.View pointerEvents="none" style={thumbContainerStyle}>
+  return <RN.View style={thumbContainerStyle}>
     {thumbImage ? <RN.Image source={thumbImage} style={thumbViewStyle as RN.ImageStyle} /> : <RN.View style={thumbViewStyle} />}
   </RN.View>
 }

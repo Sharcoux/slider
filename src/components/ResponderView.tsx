@@ -142,6 +142,7 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
 
   return <RN.View
     {...props}
+    pointerEvents='box-only'
     ref={forwardRef}
     onLayout={onLayout}
     accessibilityActions={accessibility}
