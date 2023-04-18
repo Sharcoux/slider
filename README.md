@@ -11,6 +11,8 @@ It also provides support for Range slider (with 2 thumbs) and custom thumb rende
 
 ![](slider.gif)
 
+Try it [here](https://codesandbox.io/s/sharcoux-slider-demo-7fqnk8?file=/src/App.js)!
+
 Have a look at the troubleshooting section if you encounter any issue, or open an issue.
 
 ## Install
@@ -67,7 +69,7 @@ import { RangeSlider } from '@sharcoux/slider'
   minimumValue={0}                  // Minimum value
   maximumValue={1}                  // Maximum value
   step={0}                          // The step for the slider (0 means that the slider will handle any decimal value within the range [min, max])
-  minimumRange={step || 0}          // Minimum range between the two thumbs
+  minimumRange={0}                  // Minimum range between the two thumbs (defaults as "step")
   crossingAllowed={false}           // If true, the user can make one thumb cross over the second thumb
   outboundColor='grey'              // The track color outside the current range value
   inboundColor='grey'               // The track color inside the current range value
