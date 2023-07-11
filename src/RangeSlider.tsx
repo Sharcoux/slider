@@ -2,7 +2,7 @@ import React from 'react'
 import * as RN from 'react-native'
 import useRange from './hooks/useRange'
 import Track from './components/Track'
-import Thumb, { ThumbProps } from './components/Thumb'
+import Thumb from './components/Thumb'
 import ResponderView from './components/ResponderView'
 import useDrag from './hooks/useDrag'
 import useCustomMarks from './hooks/useCustomMarks'
@@ -33,10 +33,11 @@ export type SliderProps = RN.ViewProps & {
   onValueChange?: (range: [number, number]) => void;
   onSlidingStart?: (range: [number, number]) => void;
   onSlidingComplete?: (range: [number, number]) => void;
-  CustomThumb?: React.ComponentType<ThumbProps & { value: number; thumb: 'min' | 'max' }>;
+  CustomThumb?: React.ComponentType<{ value: number; thumb: 'min' | 'max' }>;
   CustomMark?: React.ComponentType<{ value: number; active: boolean }>;
 }
 
+// We add a default padding to ensure that the responder view has enough space to recognize the touches
 const styleSheet = RN.StyleSheet.create({
   vertical: {
     paddingHorizontal: 10
@@ -61,7 +62,6 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     minTrackStyle,
     midTrackStyle,
     maxTrackStyle,
-    style,
     inverted = false,
     vertical = false,
     enabled = true,
@@ -95,11 +95,6 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
   const [min, max] = range
   const minTrackPct = React.useMemo(() => (min - minimumValue) / ((maximumValue - minimumValue) || 1), [min, minimumValue, maximumValue])
   const maxTrackPct = React.useMemo(() => (max - minimumValue) / ((maximumValue - minimumValue) || 1), [max, minimumValue, maximumValue])
-  // We add a default padding to ensure that the responder view has enough space to recognize the touches
-  const responderStyle = React.useMemo(() => [styleSheet[vertical ? 'vertical' : 'horizontal'], style], [style, vertical])
-
-  // See https://github.com/Sharcoux/slider/issues/13
-  const thumbRadius = Math.min(trackHeight, thumbSize)
 
   const { minStyle, midStyle, maxStyle } = React.useMemo(() => ({
     minStyle: (trackStyle && minTrackStyle) ? [trackStyle, minTrackStyle] : trackStyle || minTrackStyle,
@@ -108,25 +103,25 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
   }), [trackStyle, minTrackStyle, midTrackStyle, maxTrackStyle])
 
   const thumbProps = React.useMemo(() => ({
-    size: thumbSize,
     color: thumbTintColor,
-    trackHeight: thumbRadius,
     style: thumbStyle,
-    thumbImage: thumbImage
-  }), [thumbImage, thumbRadius, thumbSize, thumbStyle, thumbTintColor])
+    size: thumbSize,
+    CustomThumb: CustomThumb as React.ComponentType<{ value: number; thumb?: 'min' | 'max' }>,
+    thumbImage
+  }), [CustomThumb, thumbImage, thumbSize, thumbStyle, thumbTintColor])
 
-  const { marks, onLayoutUpdateMarks } = useCustomMarks(CustomMark, { step, minimumValue, maximumValue, activeValues: range, trackHeight, inverted, vertical })
+  const { marks, onLayoutUpdateMarks } = useCustomMarks(CustomMark, { step, minimumValue, maximumValue, activeValues: range, inverted, vertical })
 
   return (
     <RN.View {...others}>
-      <ResponderView style={responderStyle} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
+      <ResponderView style={styleSheet[vertical ? 'vertical' : 'horizontal']} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
         value={max} updateValue={updateMaxValue} onPress={onPress} onMove={onMove} onRelease={onRelease}
         enabled={enabled} vertical={vertical} inverted={inverted} onLayout={onLayoutUpdateMarks}
       >
         <Track color={outboundColor} style={minStyle} length={minTrackPct * 100} vertical={vertical} thickness={trackHeight} />
-        {CustomThumb ? <CustomThumb {...thumbProps} value={min} thumb='min' /> : <Thumb {...thumbProps} />}
+        <Thumb {...thumbProps} value={min} thumb='min'/>
         <Track color={inboundColor} style={midStyle} length={(maxTrackPct - minTrackPct) * 100} vertical={vertical} thickness={trackHeight} />
-        {CustomThumb ? <CustomThumb {...thumbProps} value={max} thumb='max' /> : <Thumb {...thumbProps} />}
+        <Thumb {...thumbProps} value={max} thumb='max' />
         <Track color={outboundColor} style={maxStyle} length={(1 - maxTrackPct) * 100} vertical={vertical} thickness={trackHeight} />
         {marks}
       </ResponderView>

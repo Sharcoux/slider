@@ -32,6 +32,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'grey'
   },
+  mark2: {
+    width: 2,
+    height: 8,
+    backgroundColor: 'grey',
+    marginBottom: 10
+  },
   markText: {
     position: 'absolute',
     left: '100%'
@@ -50,6 +56,10 @@ const CustomMark = ({ value, active }: { value: number, active: boolean }) => {
   return <View style={styles.mark}>
     <Text style={[styles.markText, { color: active ? 'red' : 'black' }]}>{value}</Text>
   </View>
+}
+
+const CustomMark2 = () => {
+  return <View style={styles.mark2} />
 }
 
 const App = () => {
@@ -146,6 +156,7 @@ const App = () => {
         onSlidingComplete={value => console.log('complete:', value)}
         onValueChange={value => console.log('change:', value)}
         style={styles.slider}
+        CustomMark={CustomMark2}
         minimumValue={0}
         maximumValue={1}
         step={0.1}

@@ -35,12 +35,12 @@ type CustomMarksProps = {
   minimumValue: number
   maximumValue: number
   step: number
-  trackHeight: number
+  thumbRadius?: number
   activeValues: number[]
   inverted: boolean
   vertical: boolean
 }
-const useCustomMarks = (CustomMark: CustomMarkType | undefined, { step, minimumValue, maximumValue, activeValues, trackHeight, inverted, vertical }: CustomMarksProps) => {
+const useCustomMarks = (CustomMark: CustomMarkType | undefined, { step, minimumValue, maximumValue, activeValues, thumbRadius = 0, inverted, vertical }: CustomMarksProps) => {
   const [sliderWidth, setSliderWidth] = React.useState(0)
   const [sliderHeight, setSliderHeight] = React.useState(0)
   const onLayoutUpdateMarks = React.useCallback<Exclude<ViewProps['onLayout'], undefined>>((event) => {
@@ -55,7 +55,7 @@ const useCustomMarks = (CustomMark: CustomMarkType | undefined, { step, minimumV
     const markCount = Math.round((maximumValue - minimumValue) / (step || 1)) + 1
     return Array(markCount).fill(0).map((_, index) => {
       const markValue = round(index * step + minimumValue)
-      const advance = ((vertical ? sliderHeight : sliderWidth) - trackHeight) * (markValue - minimumValue) / ((maximumValue - minimumValue) || 1) + trackHeight / 2
+      const advance = ((vertical ? sliderHeight : sliderWidth) - thumbRadius) * (markValue - minimumValue) / ((maximumValue - minimumValue) || 1) + thumbRadius / 2
       const padding = (vertical ? sliderWidth : sliderHeight) / 2
       const x = inverted ? (vertical ? sliderHeight : sliderWidth) - advance : advance
       const y = padding
@@ -68,7 +68,7 @@ const useCustomMarks = (CustomMark: CustomMarkType | undefined, { step, minimumV
         left={vertical ? y : x}
       />
     })
-  }, [CustomMark, activeValues, inverted, maximumValue, minimumValue, round, sliderHeight, sliderWidth, step, trackHeight, vertical])
+  }, [CustomMark, activeValues, inverted, maximumValue, minimumValue, round, sliderHeight, sliderWidth, step, thumbRadius, vertical])
 
   return { marks, onLayoutUpdateMarks }
 }

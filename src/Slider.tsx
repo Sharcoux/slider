@@ -2,7 +2,7 @@ import React from 'react'
 import * as RN from 'react-native'
 import useThumb from './hooks/useThumb'
 import Track from './components/Track'
-import Thumb, { ThumbProps } from './components/Thumb'
+import Thumb from './components/Thumb'
 import ResponderView from './components/ResponderView'
 import useDrag from './hooks/useDrag'
 import useCustomMarks from './hooks/useCustomMarks'
@@ -30,7 +30,7 @@ export type SliderProps = RN.ViewProps & {
   onValueChange?: (value: number) => void;
   onSlidingStart?: (value: number) => void;
   onSlidingComplete?: (value: number) => void;
-  CustomThumb?: React.ComponentType<ThumbProps & { value: number }>;
+  CustomThumb?: React.ComponentType<{ value: number }>;
   CustomMark?: React.ComponentType<{ value: number; active: boolean }>;
 }
 
@@ -85,23 +85,20 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
 
   const percentage = React.useMemo(() => (value - minimumValue) / ((maximumValue - minimumValue) || 1), [value, minimumValue, maximumValue])
 
-  // See https://github.com/Sharcoux/slider/issues/13
-  const thumbRadius = Math.min(trackHeight, thumbSize)
-
   const { minStyle, maxStyle } = React.useMemo(() => ({
     minStyle: (trackStyle && minTrackStyle) ? [trackStyle, minTrackStyle] : trackStyle || minTrackStyle,
     maxStyle: (trackStyle && maxTrackStyle) ? [trackStyle, maxTrackStyle] : trackStyle || maxTrackStyle
   }), [trackStyle, minTrackStyle, maxTrackStyle])
 
   const thumbProps = React.useMemo(() => ({
-    size: thumbSize,
     color: thumbTintColor,
-    trackHeight: thumbRadius,
     style: thumbStyle,
-    thumbImage: thumbImage
-  }), [thumbImage, thumbRadius, thumbSize, thumbStyle, thumbTintColor])
+    size: thumbSize,
+    CustomThumb: CustomThumb as React.ComponentType<{ value: number; thumb?: 'min' | 'max' }>,
+    thumbImage
+  }), [CustomThumb, thumbImage, thumbSize, thumbStyle, thumbTintColor])
 
-  const { marks, onLayoutUpdateMarks } = useCustomMarks(CustomMark, { step, minimumValue, maximumValue, activeValues: [value], trackHeight, inverted, vertical })
+  const { marks, onLayoutUpdateMarks } = useCustomMarks(CustomMark, { step, minimumValue, maximumValue, activeValues: [value], inverted, vertical })
 
   return (
     <RN.View {...others}>
@@ -110,7 +107,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
         enabled={enabled} vertical={vertical} inverted={inverted} onLayout={onLayoutUpdateMarks}
       >
         <Track color={minimumTrackTintColor} style={minStyle} length={percentage * 100} vertical={vertical} thickness={trackHeight} />
-        {CustomThumb ? <CustomThumb {...thumbProps} value={value} /> : <Thumb {...thumbProps} />}
+        <Thumb {...thumbProps} value={value} />
         <Track color={maximumTrackTintColor} style={maxStyle} length={(1 - percentage) * 100} vertical={vertical} thickness={trackHeight} />
         {marks}
       </ResponderView>
