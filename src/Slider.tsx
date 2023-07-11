@@ -5,6 +5,7 @@ import Track from './components/Track'
 import Thumb, { ThumbProps } from './components/Thumb'
 import ResponderView from './components/ResponderView'
 import useDrag from './hooks/useDrag'
+import useCustomMarks from './hooks/useCustomMarks'
 
 export type SliderProps = RN.ViewProps & {
   value?: number;
@@ -30,8 +31,10 @@ export type SliderProps = RN.ViewProps & {
   onSlidingStart?: (value: number) => void;
   onSlidingComplete?: (value: number) => void;
   CustomThumb?: React.ComponentType<ThumbProps & { value: number }>;
+  CustomMark?: React.ComponentType<{ value: number; active: boolean }>;
 }
 
+// We add a default padding to ensure that the responder view has enough space to recognize the touches
 const styleSheet = RN.StyleSheet.create({
   vertical: {
     paddingHorizontal: 10
@@ -54,7 +57,6 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     trackStyle,
     minTrackStyle,
     maxTrackStyle,
-    style,
     inverted = false,
     vertical = false,
     enabled = true,
@@ -66,6 +68,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     onSlidingStart,
     onSlidingComplete,
     CustomThumb,
+    CustomMark,
     ...others
   } = props
 
@@ -81,8 +84,6 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
   const { onPress, onMove, onRelease } = useDrag({ value, canMove, updateValue, onSlidingComplete, onSlidingStart })
 
   const percentage = React.useMemo(() => (value - minimumValue) / ((maximumValue - minimumValue) || 1), [value, minimumValue, maximumValue])
-  // We add a default padding to ensure that the responder view has enough space to recognize the touches
-  const responderStyle = React.useMemo(() => [styleSheet[vertical ? 'vertical' : 'horizontal'], style], [style, vertical])
 
   // See https://github.com/Sharcoux/slider/issues/13
   const thumbRadius = Math.min(trackHeight, thumbSize)
@@ -100,15 +101,20 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     thumbImage: thumbImage
   }), [thumbImage, thumbRadius, thumbSize, thumbStyle, thumbTintColor])
 
+  const { marks, onLayoutUpdateMarks } = useCustomMarks(CustomMark, { step, minimumValue, maximumValue, activeValues: [value], trackHeight, inverted, vertical })
+
   return (
-    <ResponderView style={responderStyle} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
-      value={value} updateValue={updateValue} onPress={onPress} onMove={onMove} onRelease={onRelease}
-      enabled={enabled} vertical={vertical} inverted={inverted} {...others}
-    >
-      <Track color={minimumTrackTintColor} style={minStyle} length={percentage * 100} vertical={vertical} thickness={trackHeight} />
-      {CustomThumb ? <CustomThumb {...thumbProps} value={value} /> : <Thumb {...thumbProps} />}
-      <Track color={maximumTrackTintColor} style={maxStyle} length={(1 - percentage) * 100} vertical={vertical} thickness={trackHeight} />
-    </ResponderView>
+    <RN.View {...others}>
+      <ResponderView style={styleSheet[vertical ? 'vertical' : 'horizontal']} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
+        value={value} updateValue={updateValue} onPress={onPress} onMove={onMove} onRelease={onRelease}
+        enabled={enabled} vertical={vertical} inverted={inverted} onLayout={onLayoutUpdateMarks}
+      >
+        <Track color={minimumTrackTintColor} style={minStyle} length={percentage * 100} vertical={vertical} thickness={trackHeight} />
+        {CustomThumb ? <CustomThumb {...thumbProps} value={value} /> : <Thumb {...thumbProps} />}
+        <Track color={maximumTrackTintColor} style={maxStyle} length={(1 - percentage) * 100} vertical={vertical} thickness={trackHeight} />
+        {marks}
+      </ResponderView>
+    </RN.View>
   )
 }
 )

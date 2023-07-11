@@ -16,7 +16,7 @@ function getContainerStyle (trackHeight: number) {
       height: trackHeight,
       justifyContent: 'center',
       alignItems: 'center',
-      zIndex: 1
+      zIndex: 2
     }
   }).container
 }
@@ -27,7 +27,7 @@ function getThumbStyle (size: number, color: RN.ColorValue) {
       width: size,
       height: size,
       backgroundColor: color,
-      zIndex: 1,
+      zIndex: 2,
       borderRadius: size / 2,
       overflow: 'hidden'
     }

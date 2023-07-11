@@ -53,6 +53,7 @@ import { Slider } from '@sharcoux/slider'
   onSlidingStart={undefined}        // Called when the slider is pressed. The type is (value: number) => void
   onSlidingComplete={undefined}     // Called when the press is released. The type is (value: number) => void
   CustomThumb={undefined}           // Provide your own component to render the thumb. The type is a component: ({ value: number }) => JSX.Element
+  CustomMark={undefined}            // Provide your own component to render the marks. The type is a component: ({ value: number; active: boolean }) => JSX.Element ; value indicates the value represented by the mark, while active indicates wether a thumb is currently standing on the mark
   {...props}                        // Add any View Props that will be applied to the container (style, ref, etc)
 />
 ```
@@ -90,6 +91,7 @@ import { RangeSlider } from '@sharcoux/slider'
   onSlidingStart={undefined}        // Called when the slider is pressed. The type is (range: [number, number]) => void
   onSlidingComplete={undefined}     // Called when the press is released. The type is (range: [number, number]) => void
   CustomThumb={undefined}           // Provide your own component to render the thumb. The type is a component: ({ value: number, thumb: 'min' | 'max' }) => JSX.Element
+  CustomMark={undefined}            // Provide your own component to render the marks. The type is a component: ({ value: number; active: boolean }) => JSX.Element ; value indicates the value represented by the mark, while active indicates wether a thumb is currently standing on the mark
   {...props}                        // Add any View Props that will be applied to the container (style, ref, etc)
 />
 ```
@@ -104,13 +106,12 @@ The component is probably too narrow. Increase the height of the component to en
 
 There is an [open issue](https://github.com/facebook/react-native/issues/31843) on React Native project. Meanwhile, you can widen the Slider area using paddings if needed.
 
-## Slider V5
+## Slider V6
 
-### Changelog V 6.1.0:
+### Changelog V 7.0.0:
 
- * Add CustomThumb prop to provide your own component to render the thumbs
- * Fix the crossingAllowed property that was completely broken
- * Improve performances
+ * Add CustomMark prop to provide your own component to render the places where the thumb can stop
+ * Wrap the Responder view inside a wrapper to provide more accurate control over the component
 
 ### Changelog V 6.0.0:
 

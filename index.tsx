@@ -24,6 +24,18 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderStyle: 'solid'
   },
+  mark: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'grey'
+  },
+  markText: {
+    position: 'absolute',
+    left: '100%'
+  },
   title: {
     fontSize: 28,
     margin: 20
@@ -32,6 +44,12 @@ const styles = StyleSheet.create({
 
 const CustomThumb = ({ value }: { value: number }) => {
   return <Text>{value}</Text>
+}
+
+const CustomMark = ({ value, active }: { value: number, active: boolean }) => {
+  return <View style={styles.mark}>
+    <Text style={[styles.markText, { color: active ? 'red' : 'black' }]}>{value}</Text>
+  </View>
 }
 
 const App = () => {
@@ -71,6 +89,8 @@ const App = () => {
         step={1}
         inverted={true}
         vertical={true}
+        CustomMark={CustomMark}
+        thumbSize={8}
         onValueChange={setValue}
         minimumTrackTintColor="blue"
         maximumTrackTintColor="red"
