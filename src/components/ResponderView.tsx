@@ -67,8 +67,14 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
   ...props
 }: Props, ref) => {
   const containerSize = React.useRef({ width: 0, height: 0 })
-  const fallbackRef = React.useRef<RN.View>(null)
-  const forwardRef = ref || fallbackRef
+  const fallbackRef = React.useRef<RN.View>()
+  const forwardRef = React.useCallback((view: RN.View) => {
+    fallbackRef.current = view
+    if (ref) {
+      if (typeof ref === 'function') ref(view)
+      else ref.current = view
+    }
+  }, [ref])
   const round = useRounding({ step, minimumValue, maximumValue })
 
   // We calculate the style of the container
@@ -108,9 +114,14 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
   })
   const accessibilityValues = React.useMemo(() => ({ min: minimumValue, max: maximumValue, now: value }), [minimumValue, maximumValue, value])
 
+  const originPageLocation = React.useRef({ pageX: 0, pageY: 0 })
   /** Convert a touch event into it's position on the slider */
   const eventToValue = useEvent((event: RN.GestureResponderEvent) => {
-    const { locationX: x, locationY: y } = event.nativeEvent
+    // We could simplify this code if this bug was solved:
+    // https://github.com/Sharcoux/slider/issues/18#issuecomment-877411645
+    const { pageX, pageY } = event.nativeEvent
+    const x = pageX - originPageLocation.current.pageX
+    const y = pageY - originPageLocation.current.pageY
     const offset = isVertical ? y : x
     const size = containerSize.current?.[isVertical ? 'height' : 'width'] || 1
     const newValue = inverted
@@ -136,6 +147,7 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
 
   const isEnabled = useEvent(() => enabled)
   const onLayout = useEvent((event: RN.LayoutChangeEvent) => {
+    fallbackRef.current?.measure((_x, _y, _width, _height, pageX, pageY) => (originPageLocation.current = { pageX, pageY }))
     onLayoutProp?.(event)
     containerSize.current = event.nativeEvent.layout
   })
