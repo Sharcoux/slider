@@ -100,15 +100,18 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
 
   const { marks, onLayoutUpdateMarks } = useCustomMarks(CustomMark, { step, minimumValue, maximumValue, activeValues: [value], inverted, vertical })
 
+  const minimumTrackLength = inverted? (1 - percentage) * 100: percentage * 100
+  const maximumTrackLength = inverted? percentage * 100 : (1 - percentage) * 100
+
   return (
     <RN.View {...others}>
       <ResponderView style={styleSheet[vertical ? 'vertical' : 'horizontal']} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
         value={value} updateValue={updateValue} onPress={onPress} onMove={onMove} onRelease={onRelease}
         enabled={enabled} vertical={vertical} inverted={inverted} onLayout={onLayoutUpdateMarks}
       >
-        <Track color={minimumTrackTintColor} style={minStyle} length={percentage * 100} vertical={vertical} thickness={trackHeight} />
+        <Track color={minimumTrackTintColor} style={minStyle} length={minimumTrackLength} vertical={vertical} thickness={trackHeight} />
         <Thumb {...thumbProps} value={value} />
-        <Track color={maximumTrackTintColor} style={maxStyle} length={(1 - percentage) * 100} vertical={vertical} thickness={trackHeight} />
+        <Track color={maximumTrackTintColor} style={maxStyle} length={maximumTrackLength} vertical={vertical} thickness={trackHeight} />
         {marks}
       </ResponderView>
     </RN.View>
