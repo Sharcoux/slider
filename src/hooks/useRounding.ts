@@ -1,6 +1,6 @@
 import { useEvent } from './useEvent'
 
-type Props = {
+export type RoundingProps = {
   step: number;
   minimumValue: number;
   maximumValue: number;
@@ -11,14 +11,14 @@ type Props = {
  * The results will be rounded, with the minimum amount of digits, and
  * we make sure that it still fits within the bounds.
 */
-const useRounding = ({ step, minimumValue, maximumValue }: Props) => {
+const useRounding = ({ step, minimumValue, maximumValue }: RoundingProps) => {
   return useEvent((value: number) => {
     // We tolerate not rounded values when they exactly match the bounds
     if (value === minimumValue || value === maximumValue) return value
     // Caluculate the precision we need to represent the values
     const precision = (!step) ? Infinity : ((step + '').split('.')[1] || '').length
     // Round the value to match the steps
-    const rounded = step ? Math.round(value * Math.pow(10, precision) / step) * step / Math.pow(10, precision) : value
+    const rounded = step ? Math.round(value / step) * step : value
     // Ensure that the value is correctly rounded for decimals
     const hardRounded = precision === 0 || precision === Infinity ? rounded : Number.parseFloat(rounded.toFixed(precision))
     // Ensure that the new value is still between the bounds
