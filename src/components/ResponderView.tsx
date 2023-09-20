@@ -147,7 +147,8 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
 
   const isEnabled = useEvent(() => enabled)
   const onLayout = useEvent((event: RN.LayoutChangeEvent) => {
-    fallbackRef.current?.measure((_x, _y, _width, _height, pageX, pageY) => (originPageLocation.current = { pageX, pageY }))
+    // For some reason, pageX and pageY might be 'undefined' in some cases
+    fallbackRef.current?.measure((_x, _y, _width, _height, pageX = 0, pageY = 0) => (originPageLocation.current = { pageX, pageY }))
     onLayoutProp?.(event)
     containerSize.current = event.nativeEvent.layout
   })
