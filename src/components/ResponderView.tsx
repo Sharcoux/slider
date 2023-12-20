@@ -119,9 +119,9 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
   const eventToValue = useEvent((event: RN.GestureResponderEvent) => {
     // We could simplify this code if this bug was solved:
     // https://github.com/Sharcoux/slider/issues/18#issuecomment-877411645
-    const { pageX, pageY } = event.nativeEvent
-    const x = pageX - originPageLocation.current.pageX
-    const y = pageY - originPageLocation.current.pageY
+    const { pageX, pageY, locationX, locationY } = event.nativeEvent
+    const x = (RN.Platform.OS === 'web' ? locationX : pageX) - originPageLocation.current.pageX
+    const y = (RN.Platform.OS === 'web' ? locationY : pageY) - originPageLocation.current.pageY
     const offset = isVertical ? y : x
     const size = containerSize.current?.[isVertical ? 'height' : 'width'] || 1
     const newValue = inverted
@@ -148,7 +148,9 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
   const isEnabled = useEvent(() => enabled)
   const onLayout = useEvent((event: RN.LayoutChangeEvent) => {
     // For some reason, pageX and pageY might be 'undefined' in some cases
-    fallbackRef.current?.measure((_x, _y, _width, _height, pageX = 0, pageY = 0) => (originPageLocation.current = { pageX, pageY }))
+    fallbackRef.current?.measure((x, y, _width, _height, pageX = 0, pageY = 0) => {
+      return (originPageLocation.current = { pageX: RN.Platform.OS === 'web' ? x : pageX, pageY: RN.Platform.OS === 'web' ? y : pageY })
+    })
     onLayoutProp?.(event)
     containerSize.current = event.nativeEvent.layout
   })

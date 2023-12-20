@@ -52,7 +52,7 @@ const useThumb = (props: Props) => {
 
   /**
    * Indicates whether we accept to move to the specified position.
-   * If the position is too far and slideOnTap is set, we don't accept sliding there
+   * If the position is too far and slideOnTap is not set, we don't accept sliding there
    **/
   const canMove = useEvent((newValue: number) => {
     if (slideOnTap) return true
