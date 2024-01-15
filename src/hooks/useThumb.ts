@@ -28,10 +28,13 @@ const useThumb = (props: Props) => {
   }, [updated])
 
   /** Update the thumb value */
-  const updateValue = useEvent((newValue: number) => {
+  const updateValue = useEvent((newValue: number, fireEvent?: boolean) => {
     const rounded = round(newValue)
-    if (rounded !== nextValue.current) setUpdated(true)
-    nextValue.current = rounded
+    if (rounded !== nextValue.current) {
+      nextValue.current = rounded
+      setUpdated(true)
+      if (fireEvent) onValueChange?.(nextValue.current)
+    }
   })
 
   // Update the value on bounds change
@@ -46,8 +49,7 @@ const useThumb = (props: Props) => {
 
   /** Call onValueChange when the user changed the value */
   const userUpdateValue = useEvent((newValue: number) => {
-    updateValue(newValue)
-    onValueChange && onValueChange(nextValue.current)
+    updateValue(newValue, true)
   })
 
   /**

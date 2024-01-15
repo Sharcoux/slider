@@ -11,31 +11,28 @@ type Props<T extends number | [number, number]> = {
 
 /** Creates the interactions with the slider */
 const useDrag = <T extends number | [number, number], >({ value, canMove, updateValue, onSlidingStart, onSlidingComplete }: Props<T>) => {
-  // We need to access the last callback value
-  const onSlidingStartRef = React.useRef(onSlidingStart)
-  onSlidingStartRef.current = onSlidingStart
-  const onSlidingCompleteRef = React.useRef(onSlidingComplete)
-  onSlidingCompleteRef.current = onSlidingComplete
-
   // Emit the events onSlidingStart and onSlidingComplete when we start / stop sliding
   const [sliding, setSliding] = React.useState(false)
-  const updateSliding = useEvent(slide => {
-    if (slide) onSlidingStartRef.current && onSlidingStartRef.current(value)
-    else onSlidingCompleteRef.current && onSlidingCompleteRef.current(value)
-    setSliding(slide)
+
+  const onPress = useEvent((newValue: number) => {
+    if (!canMove(newValue)) return
+    onSlidingStart?.(value)
+    setSliding(true)
+    updateValue(newValue, 'press')
   })
 
-  const onPress = useEvent((value: number) => {
-    if (!canMove(value)) return
-    updateSliding(true)
-    updateValue(value, 'press')
-  })
-
-  const onRelease = useEvent((value: number) => {
+  const onRelease = useEvent((newValue: number) => {
     if (!sliding) return
-    updateSliding(false)
-    updateValue(value, 'release')
+    setSliding(false)
+    updateValue(newValue, 'release')
   })
+
+  // The useEffect cannot depend on value, so we need this function
+  const fireSlidingComplete = useEvent(() => onSlidingComplete?.(value))
+  // Each time "sliding" switches from "true" to "false", we want to fire the event "complete" with the latest value (after update)
+  React.useEffect(() => {
+    if (sliding) return fireSlidingComplete
+  }, [fireSlidingComplete, sliding])
 
   const onMove = useEvent((value: number) => {
     if (sliding) updateValue(value, 'drag')
