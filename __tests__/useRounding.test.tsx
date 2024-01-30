@@ -51,4 +51,10 @@ describe('useRounding', () => {
     expect(testRoundingHook(props, 9)).toBe(10)
     expect(testRoundingHook(props, 21)).toBe(20)
   })
+
+  it('should round valeus when minimumValue is not 0 and step is not 1', () => {
+    const props = { minimumValue: 1, maximumValue: 13, step: 2 }
+    expect(testRoundingHook(props, 2)).toBe(3)
+    expect(testRoundingHook(props, 4.5)).toBe(5)
+  })
 })

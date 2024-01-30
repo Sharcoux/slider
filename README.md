@@ -108,6 +108,10 @@ There is an [open issue](https://github.com/facebook/react-native/issues/31843) 
 
 ## Slider V6
 
+### Changelog V 7.1.0:
+
+ * Fix the slider value when using step > 1 and minimumValue != 0
+
 ### Changelog V 7.0.0:
 
  * Add CustomMark prop to provide your own component to render the places where the thumb can stop

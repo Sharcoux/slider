@@ -18,7 +18,7 @@ const useRounding = ({ step, minimumValue, maximumValue }: RoundingProps) => {
     // Caluculate the precision we need to represent the values
     const precision = (!step) ? Infinity : ((step + '').split('.')[1] || '').length
     // Round the value to match the steps
-    const rounded = step ? Math.round(value / step) * step : value
+    const rounded = step ? minimumValue + Math.round((value - minimumValue) / step) * step : value
     // Ensure that the value is correctly rounded for decimals
     const hardRounded = precision === 0 || precision === Infinity ? rounded : Number.parseFloat(rounded.toFixed(precision))
     // Ensure that the new value is still between the bounds

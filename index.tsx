@@ -82,11 +82,11 @@ const App = () => {
       />
       <Slider
         style={styles.slider}
-        minimumValue={0}
-        maximumValue={100}
+        minimumValue={1}
+        maximumValue={13}
         value={value}
         CustomThumb={CustomThumb}
-        step={10}
+        step={2}
         onValueChange={setValue}
         minimumTrackTintColor="blue"
         maximumTrackTintColor="red"
