@@ -111,6 +111,7 @@ There is an [open issue](https://github.com/facebook/react-native/issues/31843) 
 ### Changelog V 7.1.0:
 
  * Fix the slider value when using step > 1 and minimumValue != 0
+ * Prevent rerenders in the RangeSlider if the provided value prop has the same bounds as the current range
 
 ### Changelog V 7.0.0:
 

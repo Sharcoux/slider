@@ -124,6 +124,7 @@ const App = () => {
         style={styles.slider}
         inverted={true}
         slideOnTap={false}
+        range={[...range]}
         minimumValue={0}
         maximumValue={1}
       />

@@ -33,8 +33,8 @@ const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumV
 
   // Update the value on bounds or prop change
   React.useEffect(() => {
-    updateRange(propValue)
-  }, [step, minimumValue, maximumValue, updateRange, propValue])
+    updateRange([minProp, maxProp])
+  }, [step, minimumValue, maximumValue, updateRange, minProp, maxProp])
 
   const updateMin = useEvent((newMin: number) => userUpdateRange(([, oldMax]) => [newMin, oldMax]))
   const updateMax = useEvent((newMax: number) => userUpdateRange(([oldMin]) => [oldMin, newMax]))
