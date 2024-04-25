@@ -42,7 +42,7 @@ const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumV
   // Min value thumb
   const { updateValue: updateMinValue, canMove: canMoveMin } = useThumb({
     minimumValue,
-    maximumValue: range[1] - (crossingAllowed ? 0 : minimumRange),
+    maximumValue: range[1] - minimumRange,
     value: minProp,
     step,
     slideOnTap,
@@ -51,7 +51,7 @@ const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumV
 
   // Max value thumb
   const { updateValue: updateMaxValue, canMove: canMoveMax } = useThumb({
-    minimumValue: range[0] + (crossingAllowed ? 0 : minimumRange),
+    minimumValue: range[0] + minimumRange,
     maximumValue,
     value: maxProp,
     step,
@@ -75,8 +75,10 @@ const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumV
 
     // We update the state accordingly
     isMinClosest ? updateMinValue(value) : updateMaxValue(value)
-    if (state === 'release') currentThumb.current = undefined // We release the thumb
-    else currentThumb.current = isMinClosest ? 'min' : 'max' // We set the thumb being currently moved
+    const newThumb = isMinClosest ? 'min' : 'max' // We set the thumb being currently moved
+    // When the 2 thumbs cross, we set the other thumb to the max possible value
+    if (state === 'drag' && newThumb !== currentThumb.current) isMinClosest ? updateMaxValue(minValue) : updateMinValue(maxValue)
+    currentThumb.current = state === 'release' ? undefined : newThumb // We release the thumb, or keep maintaining it
     return isMinClosest ? [value, maxValue] : [minValue, value]
   })
 
