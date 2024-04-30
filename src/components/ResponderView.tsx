@@ -4,7 +4,6 @@ import { useEvent } from '../hooks/useEvent'
 import useRounding from '../hooks/useRounding'
 
 type Props = RN.ViewProps & {
-  value: number;
   minimumValue: number;
   maximumValue: number;
   step: number;
@@ -13,17 +12,11 @@ type Props = RN.ViewProps & {
   vertical: boolean;
   enabled: boolean;
   thumbSize?: number;
-  updateValue: (value: number) => void;
   onMove: (value: number) => void;
   onPress: (value: number) => void;
   onRelease: (value: number) => void;
   children?: React.ReactNode;
 }
-
-const accessibility = [
-  { name: 'increment', label: 'increment' },
-  { name: 'decrement', label: 'decrement' }
-]
 
 const styleSheet = RN.StyleSheet.create({
   view: {
@@ -58,8 +51,7 @@ const styleSheet = RN.StyleSheet.create({
 const ResponderView = React.forwardRef<RN.View, Props>(({
   vertical, inverted, enabled,
   style,
-  minimumValue, maximumValue, value, step,
-  updateValue,
+  minimumValue, maximumValue, step,
   onLayout: onLayoutProp,
   onMove: onMoveProp,
   onPress: onPressProp,
@@ -84,35 +76,6 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
     styleSheet[(isVertical ? 'column' : 'row') + (inverted ? 'Reverse' : '') as 'row'],
     style
   ]), [style, isVertical, inverted])
-
-  // Accessibility actions
-  const accessibilityActions = useEvent((event: RN.AccessibilityActionEvent) => {
-    const tenth = (maximumValue - minimumValue) / 10
-    switch (event.nativeEvent.actionName) {
-      case 'increment':
-        updateValue(value + (step || tenth))
-        break
-      case 'decrement':
-        updateValue(value - (step || tenth))
-        break
-    }
-  })
-  const handleAccessibilityKeys = useEvent((event: RN.NativeSyntheticEvent<KeyboardEvent>) => {
-    const key = event.nativeEvent.key
-    switch (key) {
-      case 'ArrowUp':
-      case 'ArrowRight': {
-        const accessibilityEvent = { ...event, nativeEvent: { actionName: 'increment' } }
-        accessibilityActions(accessibilityEvent)
-      } break
-      case 'ArrowDown':
-      case 'ArrowLeft': {
-        const accessibilityEvent = { ...event, nativeEvent: { actionName: 'decrement' } }
-        accessibilityActions(accessibilityEvent)
-      } break
-    }
-  })
-  const accessibilityValues = React.useMemo(() => ({ min: minimumValue, max: maximumValue, now: value }), [minimumValue, maximumValue, value])
 
   const originPageLocation = React.useRef({ pageX: 0, pageY: 0 })
   /** Convert a touch event into it's position on the slider */
@@ -157,24 +120,16 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
 
   return <RN.View
     {...props}
+    focusable={false}
     pointerEvents='box-only'
     ref={forwardRef}
     onLayout={onLayout}
-    accessibilityActions={accessibility}
-    onAccessibilityAction={accessibilityActions}
-    accessible={true}
-    accessibilityValue={accessibilityValues}
-    accessibilityRole={'adjustable'}
     style={containerStyle}
     onStartShouldSetResponder={isEnabled}
     onMoveShouldSetResponder={isEnabled}
     onResponderGrant={onPress}
     onResponderRelease={onRelease}
     onResponderMove={onMove}
-    // This is for web
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    onKeyDown={handleAccessibilityKeys}
   />
 })
 

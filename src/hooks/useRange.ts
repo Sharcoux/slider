@@ -15,35 +15,31 @@ type Props = {
 
 /** Handle the state of a range slider */
 const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumValue, slideOnTap, onValueChange, crossingAllowed }: Props) => {
-  const [range, setRange] = React.useState(propValue)
   const [minProp, maxProp] = propValue
+  const [minValue, setMinValue] = React.useState(minProp)
+  const [maxValue, setMaxValue] = React.useState(maxProp)
 
-  const updateRange = useEvent((rangeUpdate: React.SetStateAction<[number, number]>, fireEvent?: boolean) => {
-    setRange(oldRange => {
-      const newRange = typeof rangeUpdate === 'function' ? rangeUpdate(oldRange) : rangeUpdate
-      // If no change, we return the previous object to avoir rerenders
-      if (oldRange[0] === newRange[0] && oldRange[1] === newRange[1]) return oldRange
-      // We call onValueChange as soon as the setState is over
-      if (fireEvent && onValueChange) setTimeout(() => onValueChange(newRange), 0)
-      return newRange
-    })
+  React.useEffect(() => setMinValue(minProp), [minProp])
+  React.useEffect(() => setMaxValue(maxProp), [maxProp])
+  const range = React.useMemo<[number, number]>(() => [minValue, maxValue], [maxValue, minValue])
+  console.log('---', minProp, minValue)
+
+  const updateMin = useEvent((newMin: number) => {
+    if (minValue === newMin) return
+    setMinValue(newMin)
+    onValueChange?.([newMin, maxValue])
   })
-
-  const userUpdateRange = useEvent((newRange: React.SetStateAction<[number, number]>) => updateRange(newRange, true))
-
-  // Update the value on bounds or prop change
-  React.useEffect(() => {
-    updateRange([minProp, maxProp])
-  }, [step, minimumValue, maximumValue, updateRange, minProp, maxProp])
-
-  const updateMin = useEvent((newMin: number) => userUpdateRange(([, oldMax]) => [newMin, oldMax]))
-  const updateMax = useEvent((newMax: number) => userUpdateRange(([oldMin]) => [oldMin, newMax]))
+  const updateMax = useEvent((newMax: number) => {
+    if (maxValue === newMax) return
+    setMaxValue(newMax)
+    onValueChange?.([minValue, newMax])
+  })
 
   // Min value thumb
   const { updateValue: updateMinValue, canMove: canMoveMin } = useThumb({
     minimumValue,
-    maximumValue: range[1] - minimumRange,
-    value: minProp,
+    maximumValue: Math.max(minValue, maxValue - minimumRange),
+    value: minValue,
     step,
     slideOnTap,
     onValueChange: updateMin
@@ -51,9 +47,9 @@ const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumV
 
   // Max value thumb
   const { updateValue: updateMaxValue, canMove: canMoveMax } = useThumb({
-    minimumValue: range[0] + minimumRange,
+    minimumValue: Math.min(maxValue, minValue + minimumRange),
     maximumValue,
-    value: maxProp,
+    value: maxValue,
     step,
     slideOnTap,
     onValueChange: updateMax
@@ -63,7 +59,6 @@ const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumV
 
   // Method to update the lower or higher bound according to which one is the closest
   const updateClosestValue = useEvent((value: number, state: 'press' | 'release' | 'drag') => {
-    const [minValue, maxValue] = range
     let isMinClosest = false
     // When moving a thumb, we don't want to let it cross the other thumb
     if (currentThumb.current && !crossingAllowed) isMinClosest = currentThumb.current === 'min'

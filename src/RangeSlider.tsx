@@ -48,11 +48,10 @@ const styleSheet = RN.StyleSheet.create({
 })
 
 const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwardedRef) => {
-  const defaultValue = React.useMemo<[number, number]>(() => [props.minimumValue || 0, props.minimumValue || 0], [props.minimumValue])
   const {
     minimumValue = 0,
     maximumValue = 1,
-    range: propValue = defaultValue,
+    range: propRange,
     step = 0,
     outboundColor = 'grey',
     inboundColor = 'blue',
@@ -79,7 +78,13 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     ...others
   } = props
 
-  const { updateClosestValue, updateMaxValue, range, canMove } = useRange({
+  const [minProp, maxProp] = propRange || []
+  const propValue = React.useMemo<[number, number]>(() => [
+    minProp ?? props.minimumValue ?? 0,
+    maxProp ?? Math.max(props.maximumValue ?? 1, (props.minimumValue || 0) + (props.minimumRange || props.step || 0))
+  ], [maxProp, minProp, props.maximumValue, props.minimumRange, props.minimumValue, props.step])
+
+  const { updateClosestValue, updateMaxValue, updateMinValue, range, canMove } = useRange({
     minimumRange,
     minimumValue,
     maximumValue,
@@ -90,9 +95,9 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     onValueChange
   })
 
+  const [min, max] = range
   const { onPress, onMove, onRelease } = useDrag({ value: range, updateValue: updateClosestValue, onSlidingComplete, onSlidingStart, canMove })
 
-  const [min, max] = range
   const minTrackPct = React.useMemo(() => (min - minimumValue) / ((maximumValue - minimumValue) || 1), [min, minimumValue, maximumValue])
   const maxTrackPct = React.useMemo(() => (max - minimumValue) / ((maximumValue - minimumValue) || 1), [max, minimumValue, maximumValue])
 
@@ -107,21 +112,24 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     style: thumbStyle,
     size: thumbSize,
     CustomThumb: CustomThumb as React.ComponentType<{ value: number; thumb?: 'min' | 'max' }>,
-    thumbImage
-  }), [CustomThumb, thumbImage, thumbSize, thumbStyle, thumbTintColor])
+    thumbImage,
+    minimumValue,
+    maximumValue,
+    step
+  }), [CustomThumb, maximumValue, minimumValue, step, thumbImage, thumbSize, thumbStyle, thumbTintColor])
 
   const { marks, onLayoutUpdateMarks } = useCustomMarks(CustomMark, { step, minimumValue, maximumValue, activeValues: range, inverted, vertical })
 
   return (
     <RN.View {...others}>
       <ResponderView style={styleSheet[vertical ? 'vertical' : 'horizontal']} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
-        value={max} updateValue={updateMaxValue} onPress={onPress} onMove={onMove} onRelease={onRelease}
+        onPress={onPress} onMove={onMove} onRelease={onRelease}
         enabled={enabled} vertical={vertical} inverted={inverted} onLayout={onLayoutUpdateMarks}
       >
         <Track color={outboundColor} style={minStyle} length={minTrackPct * 100} vertical={vertical} thickness={trackHeight} />
-        <Thumb {...thumbProps} value={min} thumb='min'/>
+        <Thumb {...thumbProps} updateValue={updateMinValue} value={min} thumb='min' />
         <Track color={inboundColor} style={midStyle} length={(maxTrackPct - minTrackPct) * 100} vertical={vertical} thickness={trackHeight} />
-        <Thumb {...thumbProps} value={max} thumb='max' />
+        <Thumb {...thumbProps} updateValue={updateMaxValue} value={max} thumb='max' />
         <Track color={outboundColor} style={maxStyle} length={(1 - maxTrackPct) * 100} vertical={vertical} thickness={trackHeight} />
         {marks}
       </ResponderView>

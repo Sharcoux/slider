@@ -62,6 +62,10 @@ const CustomMark2 = () => {
   return <View style={styles.mark2} />
 }
 
+const thumbImage = {
+  uri: 'https://reactnative.dev/img/tiny_logo.png'
+}
+
 const App = () => {
   const [value, setValue] = React.useState(0)
   const [range, setRange] = React.useState<[number, number]>([0, 0])
@@ -79,6 +83,7 @@ const App = () => {
         slideOnTap={false}
         minimumValue={0}
         maximumValue={max}
+        thumbImage={thumbImage}
       />
       <Slider
         style={styles.slider}
@@ -127,6 +132,7 @@ const App = () => {
         range={[...range]}
         minimumValue={0}
         maximumValue={1}
+        thumbImage={thumbImage}
       />
       <RangeSlider
         style={styles.slider}

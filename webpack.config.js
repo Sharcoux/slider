@@ -28,7 +28,10 @@ module.exports = {
       {
         test: /\.(tsx|ts|jsx|js|mjs)$/,
         exclude: /node_modules/,
-        loader: 'ts-loader'
+        loader: 'ts-loader',
+        options: {
+          transpileOnly: true
+        }
       },
       {
         test: /\.(js|jsx)$/,

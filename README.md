@@ -106,7 +106,12 @@ The component is probably too narrow. Increase the height of the component to en
 
 There is an [open issue](https://github.com/facebook/react-native/issues/31843) on React Native project. Meanwhile, you can widen the Slider area using paddings if needed.
 
-## Slider V6
+## Slider V7
+
+### Changelog V 7.2.0:
+
+ * Improve key navigation and accessibility on range slider
+ * Move the focusable area on the Thumb instead of the ResponderView
 
 ### Changelog V 7.1.0:
 
