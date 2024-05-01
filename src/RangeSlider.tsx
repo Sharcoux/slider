@@ -127,9 +127,9 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
         enabled={enabled} vertical={vertical} inverted={inverted} onLayout={onLayoutUpdateMarks}
       >
         <Track color={outboundColor} style={minStyle} length={minTrackPct * 100} vertical={vertical} thickness={trackHeight} />
-        <Thumb {...thumbProps} updateValue={updateMinValue} value={min} thumb='min' />
+        <Thumb key='min' {...thumbProps} updateValue={updateMinValue} value={min} thumb='min' />
         <Track color={inboundColor} style={midStyle} length={(maxTrackPct - minTrackPct) * 100} vertical={vertical} thickness={trackHeight} />
-        <Thumb {...thumbProps} updateValue={updateMaxValue} value={max} thumb='max' />
+        <Thumb key='max' {...thumbProps} updateValue={updateMaxValue} value={max} thumb='max' />
         <Track color={outboundColor} style={maxStyle} length={(1 - maxTrackPct) * 100} vertical={vertical} thickness={trackHeight} />
         {marks}
       </ResponderView>

@@ -16,44 +16,35 @@ type Props = {
 /** Handle the state of a range slider */
 const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumValue, slideOnTap, onValueChange, crossingAllowed }: Props) => {
   const [minProp, maxProp] = propValue
-  const [minValue, setMinValue] = React.useState(minProp)
-  const [maxValue, setMaxValue] = React.useState(maxProp)
+  const minRef = React.useRef<number>(minProp)
+  const maxRef = React.useRef<number>(maxProp)
 
-  React.useEffect(() => setMinValue(minProp), [minProp])
-  React.useEffect(() => setMaxValue(maxProp), [maxProp])
-  const range = React.useMemo<[number, number]>(() => [minValue, maxValue], [maxValue, minValue])
-  console.log('---', minProp, minValue)
-
-  const updateMin = useEvent((newMin: number) => {
-    if (minValue === newMin) return
-    setMinValue(newMin)
-    onValueChange?.([newMin, maxValue])
-  })
-  const updateMax = useEvent((newMax: number) => {
-    if (maxValue === newMax) return
-    setMaxValue(newMax)
-    onValueChange?.([minValue, newMax])
-  })
+  const onMinChange = useEvent((min: number) => onValueChange?.([min, maxRef.current].sort((a, b) => a - b) as [number, number]))
+  const onMaxChange = useEvent((max: number) => onValueChange?.([minRef.current, max].sort((a, b) => a - b) as [number, number]))
 
   // Min value thumb
-  const { updateValue: updateMinValue, canMove: canMoveMin } = useThumb({
+  const { updateValue: updateMinValue, canMove: canMoveMin, value: minValue } = useThumb({
     minimumValue,
-    maximumValue: Math.max(minValue, maxValue - minimumRange),
-    value: minValue,
+    maximumValue: Math.max(minimumValue, maxRef.current - minimumRange),
+    value: minProp,
     step,
     slideOnTap,
-    onValueChange: updateMin
+    onValueChange: onMinChange
   })
 
   // Max value thumb
-  const { updateValue: updateMaxValue, canMove: canMoveMax } = useThumb({
-    minimumValue: Math.min(maxValue, minValue + minimumRange),
+  const { updateValue: updateMaxValue, canMove: canMoveMax, value: maxValue } = useThumb({
+    minimumValue: Math.min(maximumValue, minRef.current + minimumRange),
     maximumValue,
-    value: maxValue,
+    value: maxProp,
     step,
     slideOnTap,
-    onValueChange: updateMax
+    onValueChange: onMaxChange
   })
+
+  minRef.current = minValue
+  maxRef.current = maxValue
+  const range = React.useMemo(() => [minValue, maxValue].sort((a, b) => a - b) as [number, number], [maxValue, minValue])
 
   const currentThumb = React.useRef<'min' | 'max'>()
 
@@ -62,7 +53,7 @@ const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumV
     let isMinClosest = false
     // When moving a thumb, we don't want to let it cross the other thumb
     if (currentThumb.current && !crossingAllowed) isMinClosest = currentThumb.current === 'min'
-    else if (!currentThumb.current) isMinClosest = Math.abs(value - minValue) < Math.abs(value - maxValue)
+    else if (!currentThumb.current) isMinClosest = Math.abs(value - minValue) < Math.abs(value - maxValue) || (minValue === maxValue && value < minValue)
     // if the current thumb is the min, we keep it as long as it's below the max
     else if (currentThumb.current === 'min') isMinClosest = value <= maxValue
     // Otherwise, if we hold the max thumb, we switch only if the value is below the min
