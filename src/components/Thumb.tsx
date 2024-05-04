@@ -15,6 +15,7 @@ export type ThumbProps = {
   step: number
   updateValue: (value: number) => void
   CustomThumb?: React.ComponentType<{ value: number; thumb?: 'min' | 'max' }>;
+  thumbRef?: React.LegacyRef<RN.View>
 }
 
 function getThumbContainerStyle (size?: number) {
@@ -79,6 +80,7 @@ const Thumb = ({
   minimumValue,
   maximumValue,
   step,
+  thumbRef,
   updateValue
 }: ThumbProps) => {
   const thumbContainerStyle = React.useMemo<RN.StyleProp<RN.ViewStyle>>(() => getThumbContainerStyle(CustomThumb ? undefined : size), [CustomThumb, size])
@@ -87,13 +89,13 @@ const Thumb = ({
 
   // Accessibility actions
   const accessibilityActions = useEvent((event: RN.AccessibilityActionEvent) => {
-    const tenth = (maximumValue - minimumValue) / 10
+    const tenth = Math.round((maximumValue - minimumValue) / 10)
     switch (event.nativeEvent.actionName) {
       case 'increment':
-        updateValue(value + (step || tenth))
+        updateValue(+(step || tenth))
         break
       case 'decrement':
-        updateValue(value - (step || tenth))
+        updateValue(-(step || tenth))
         break
     }
   })
@@ -123,6 +125,7 @@ const Thumb = ({
       accessibilityValue={accessibilityValues}
       accessibilityRole='adjustable'
       accessibilityLabel={thumb}
+      ref={thumbRef}
       // This is for web
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
