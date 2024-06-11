@@ -6,6 +6,7 @@ import Thumb from './components/Thumb'
 import ResponderView from './components/ResponderView'
 import useDrag from './hooks/useDrag'
 import useCustomMarks from './hooks/useCustomMarks'
+import { useAccessibilityRangeSlider } from './hooks/useAccessibilityRangeSlider'
 
 export type SliderProps = RN.ViewProps & {
   range?: [number, number];
@@ -120,16 +121,27 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
 
   const { marks, onLayoutUpdateMarks } = useCustomMarks(CustomMark, { step, minimumValue, maximumValue, activeValues: range, inverted, vertical })
 
+  const {
+    minThumbRef,
+    maxThumbRef,
+    updateAccessibilityMinValue,
+    updateAccessibilityMaxValue, blurThumbs
+  } = useAccessibilityRangeSlider({ min, max, updateMaxValue, updateMinValue })
+
   return (
     <RN.View {...others}>
       <ResponderView style={styleSheet[vertical ? 'vertical' : 'horizontal']} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
-        onPress={onPress} onMove={onMove} onRelease={onRelease}
+        onPress={(value) => {
+          // We need to blur the min/max thumb if it is focused when the user interacts with the slider
+          blurThumbs()
+          onPress(value)
+        }} onMove={onMove} onRelease={onRelease}
         enabled={enabled} vertical={vertical} inverted={inverted} onLayout={onLayoutUpdateMarks}
       >
         <Track color={outboundColor} style={minStyle} length={minTrackPct * 100} vertical={vertical} thickness={trackHeight} />
-        <Thumb key='min' {...thumbProps} updateValue={updateMinValue} value={min} thumb='min' />
+        <Thumb key='min' {...thumbProps} thumbRef={minThumbRef} updateValue={(value) => crossingAllowed ? updateAccessibilityMinValue(value) : updateMinValue(min + value)} value={min} thumb='min' />
         <Track color={inboundColor} style={midStyle} length={(maxTrackPct - minTrackPct) * 100} vertical={vertical} thickness={trackHeight} />
-        <Thumb key='max' {...thumbProps} updateValue={updateMaxValue} value={max} thumb='max' />
+        <Thumb key='max' {...thumbProps} thumbRef={maxThumbRef} updateValue={(value) => crossingAllowed ? updateAccessibilityMaxValue(value) : updateMaxValue(max + value)} value={max} thumb='max' />
         <Track color={outboundColor} style={maxStyle} length={(1 - maxTrackPct) * 100} vertical={vertical} thickness={trackHeight} />
         {marks}
       </ResponderView>

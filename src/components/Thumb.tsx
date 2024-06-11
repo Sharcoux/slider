@@ -1,6 +1,7 @@
 import React from 'react'
 import * as RN from 'react-native'
 import { useEvent } from '../hooks/useEvent'
+import useRounding from '../hooks/useRounding'
 
 export type ThumbProps = {
   style?: RN.StyleProp<RN.ViewStyle>;
@@ -15,6 +16,7 @@ export type ThumbProps = {
   step: number
   updateValue: (value: number) => void
   CustomThumb?: React.ComponentType<{ value: number; thumb?: 'min' | 'max' }>;
+  thumbRef?: React.LegacyRef<RN.View>
 }
 
 function getThumbContainerStyle (size?: number) {
@@ -79,21 +81,23 @@ const Thumb = ({
   minimumValue,
   maximumValue,
   step,
+  thumbRef,
   updateValue
 }: ThumbProps) => {
   const thumbContainerStyle = React.useMemo<RN.StyleProp<RN.ViewStyle>>(() => getThumbContainerStyle(CustomThumb ? undefined : size), [CustomThumb, size])
   const containerStyle = React.useMemo<RN.StyleProp<RN.ViewStyle>>(() => getContainerStyle(thumbRadius), [thumbRadius])
   const thumbViewStyle = React.useMemo<RN.StyleProp<RN.ImageStyle>>(() => [getThumbStyle(size, color), style as RN.ImageStyle], [style, size, color])
-
+  // Hook for rounding functionality
+  const round = useRounding({ step, minimumValue, maximumValue })
   // Accessibility actions
   const accessibilityActions = useEvent((event: RN.AccessibilityActionEvent) => {
-    const tenth = (maximumValue - minimumValue) / 10
+    const stepValue = round((maximumValue - minimumValue) / 10)
     switch (event.nativeEvent.actionName) {
       case 'increment':
-        updateValue(value + (step || tenth))
+        updateValue(+stepValue)
         break
       case 'decrement':
-        updateValue(value - (step || tenth))
+        updateValue(-stepValue)
         break
     }
   })
@@ -123,6 +127,7 @@ const Thumb = ({
       accessibilityValue={accessibilityValues}
       accessibilityRole='adjustable'
       accessibilityLabel={thumb}
+      ref={thumbRef}
       // This is for web
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
