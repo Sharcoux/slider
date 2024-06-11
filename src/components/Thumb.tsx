@@ -1,6 +1,7 @@
 import React from 'react'
 import * as RN from 'react-native'
 import { useEvent } from '../hooks/useEvent'
+import useRounding from '../hooks/useRounding'
 
 export type ThumbProps = {
   style?: RN.StyleProp<RN.ViewStyle>;
@@ -86,16 +87,17 @@ const Thumb = ({
   const thumbContainerStyle = React.useMemo<RN.StyleProp<RN.ViewStyle>>(() => getThumbContainerStyle(CustomThumb ? undefined : size), [CustomThumb, size])
   const containerStyle = React.useMemo<RN.StyleProp<RN.ViewStyle>>(() => getContainerStyle(thumbRadius), [thumbRadius])
   const thumbViewStyle = React.useMemo<RN.StyleProp<RN.ImageStyle>>(() => [getThumbStyle(size, color), style as RN.ImageStyle], [style, size, color])
-
+  // Hook for rounding functionality
+  const round = useRounding({ step, minimumValue, maximumValue })
   // Accessibility actions
   const accessibilityActions = useEvent((event: RN.AccessibilityActionEvent) => {
-    const tenth = Math.round((maximumValue - minimumValue) / 10)
+    const stepValue = round((maximumValue - minimumValue) / 10)
     switch (event.nativeEvent.actionName) {
       case 'increment':
-        updateValue(+(step || tenth))
+        updateValue(+stepValue)
         break
       case 'decrement':
-        updateValue(-(step || tenth))
+        updateValue(-stepValue)
         break
     }
   })
