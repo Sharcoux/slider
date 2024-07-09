@@ -32,6 +32,7 @@ export type SliderProps = RN.ViewProps & {
   onSlidingComplete?: (value: number) => void;
   CustomThumb?: React.ComponentType<{ value: number }>;
   CustomMark?: React.ComponentType<{ value: number; active: boolean }>;
+  wrapperOverride?: RN.StyleProp<RN.ViewStyle>;
 }
 
 // We add a default padding to ensure that the responder view has enough space to recognize the touches
@@ -69,6 +70,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     onSlidingComplete,
     CustomThumb,
     CustomMark,
+    wrapperOverride,
     ...others
   } = props
 
@@ -105,7 +107,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
 
   return (
     <RN.View {...others}>
-      <ResponderView style={styleSheet[vertical ? 'vertical' : 'horizontal']} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
+      <ResponderView style={wrapperOverride || styleSheet[vertical ? 'vertical' : 'horizontal']} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
         onPress={onPress} onMove={onMove} onRelease={onRelease}
         enabled={enabled} vertical={vertical} inverted={inverted} onLayout={onLayoutUpdateMarks}
       >
