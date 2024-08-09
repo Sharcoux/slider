@@ -24,7 +24,7 @@ If applicable, add screenshots to help explain your problem.
 **Please complete the following information:**
  - OS: [e.g. iOS]
  - Browser [e.g. chrome, safari]
- - @react-native-assets/slider version [if you are sure that you are on the latest version, write "latest"]
+ - @sharcoux/slider version [if you are sure that you are on the latest version, write "latest"]
 
 **Additional context**
 Add any other context about the problem here.

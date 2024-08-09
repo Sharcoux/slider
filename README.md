@@ -18,7 +18,7 @@ Have a look at the troubleshooting section if you encounter any issue, or open a
 ## Install
 
 ```
-npm i -S @react-native-assets/slider
+npm i -S @sharcoux/slider
 ```
 
 ## Usage
@@ -28,7 +28,7 @@ npm i -S @react-native-assets/slider
 You can see below the available props with their respective default values.
 
 ```javascript
-import { Slider } from '@react-native-assets/slider'
+import { Slider } from '@sharcoux/slider'
 
 <Slider
   value={0}                         // set the current slider's value
@@ -63,7 +63,7 @@ import { Slider } from '@react-native-assets/slider'
 You can see below the available props with their respective default values
 
 ```javascript
-import { RangeSlider } from '@react-native-assets/slider'
+import { RangeSlider } from '@sharcoux/slider'
 
 <RangeSlider
   range={[0, 1]}                    // set the current slider's value
