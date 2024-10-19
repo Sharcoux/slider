@@ -103,18 +103,32 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
 
   const { marks, onLayoutUpdateMarks } = useCustomMarks(CustomMark, { step, minimumValue, maximumValue, activeValues: [value], inverted, vertical })
 
+  const containerStyle = React.useMemo(() =>
+    [styleSheet[vertical ? 'vertical' : 'horizontal'], props.style],
+  [vertical, props.style]
+  )
+
   return (
-    <RN.View {...others}>
-      <ResponderView style={styleSheet[vertical ? 'vertical' : 'horizontal']} ref={forwardedRef} maximumValue={maximumValue} minimumValue={minimumValue} step={step}
-        onPress={onPress} onMove={onMove} onRelease={onRelease}
-        enabled={enabled} vertical={vertical} inverted={inverted} onLayout={onLayoutUpdateMarks}
-      >
-        <Track color={minimumTrackTintColor} style={minStyle} length={percentage * 100} vertical={vertical} thickness={trackHeight} />
-        <Thumb {...thumbProps} updateValue={updateValue} value={value} />
-        <Track color={maximumTrackTintColor} style={maxStyle} length={(1 - percentage) * 100} vertical={vertical} thickness={trackHeight} />
-        {marks}
-      </ResponderView>
-    </RN.View>
+    <ResponderView
+      {...others}
+      ref={forwardedRef}
+      maximumValue={maximumValue}
+      minimumValue={minimumValue}
+      step={step}
+      onPress={onPress}
+      onMove={onMove}
+      onRelease={onRelease}
+      enabled={enabled}
+      vertical={vertical}
+      inverted={inverted}
+      onLayout={onLayoutUpdateMarks}
+      style={containerStyle}
+    >
+      <Track color={minimumTrackTintColor} style={minStyle} length={percentage * 100} vertical={vertical} thickness={trackHeight} />
+      <Thumb {...thumbProps} updateValue={updateValue} value={value} />
+      <Track color={maximumTrackTintColor} style={maxStyle} length={(1 - percentage) * 100} vertical={vertical} thickness={trackHeight} />
+      {marks}
+    </ResponderView>
   )
 }
 )
