@@ -106,7 +106,11 @@ The component is probably too narrow. Increase the height of the component to en
 
 There is an [open issue](https://github.com/facebook/react-native/issues/31843) on React Native project. Meanwhile, you can widen the Slider area using paddings if needed.
 
-## Slider V7
+## Slider V8
+
+### Changelog V 8.0.0:
+
+ * Wrapped the slider in a ResponderView to enable touch events on the padding area
 
 ### Changelog V 7.2.0:
 
