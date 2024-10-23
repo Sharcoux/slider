@@ -33,8 +33,10 @@
   },
   "peerDependencies": {
     "react": ">=16.13.1",
+    "react-native": ">=0.61.4"
+  },
+  "optionalDependencies": {
     "react-dom": ">=16.13.1",
-    "react-native": ">=0.61.4",
     "react-native-web": ">=0.13.4"
   },
   "devDependencies": {
