@@ -34,16 +34,6 @@ export type SliderProps = RN.ViewProps & {
   CustomMark?: React.ComponentType<{ value: number; active: boolean }>;
 }
 
-// We add a default padding to ensure that the responder view has enough space to recognize the touches
-const styleSheet = RN.StyleSheet.create({
-  vertical: {
-    paddingHorizontal: 10
-  },
-  horizontal: {
-    paddingVertical: 10
-  }
-})
-
 const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwardedRef) => {
   const {
     minimumValue = 0,
@@ -103,11 +93,6 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
 
   const { marks, onLayoutUpdateMarks } = useCustomMarks(CustomMark, { step, minimumValue, maximumValue, activeValues: [value], inverted, vertical })
 
-  const containerStyle = React.useMemo(() =>
-    [styleSheet[vertical ? 'vertical' : 'horizontal'], props.style],
-  [vertical, props.style]
-  )
-
   return (
     <ResponderView
       {...others}
@@ -122,7 +107,6 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
       vertical={vertical}
       inverted={inverted}
       onLayout={onLayoutUpdateMarks}
-      style={containerStyle}
     >
       <Track color={minimumTrackTintColor} style={minStyle} length={percentage * 100} vertical={vertical} thickness={trackHeight} />
       <Thumb {...thumbProps} updateValue={updateValue} value={value} />
