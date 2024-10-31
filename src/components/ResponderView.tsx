@@ -67,7 +67,6 @@ const ResponderView = React.forwardRef<RN.View, Props>((props, ref) => {
     const newValue = inverted
       ? maximumValue - ((maximumValue - minimumValue) * offset) / size
       : minimumValue + ((maximumValue - minimumValue) * offset) / size
-    console.log('eventToValue', originPageLocation.current.pageX, pageX)
     return round(newValue)
   })
 

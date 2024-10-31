@@ -17,30 +17,18 @@ const useThumb = (props: Props) => {
   const [value, setValue] = React.useState(propValue || minimumValue) // The value desired
   const round = useRounding({ step, minimumValue, maximumValue })
 
-  // This block will group close call to setValue into one single update to greatly improve perfs
-  const [updated, setUpdated] = React.useState(false)
-  const nextValue = React.useRef(value)
-  React.useEffect(() => {
-    if (updated) {
-      setUpdated(false)
-      setValue(nextValue.current)
-    }
-  }, [updated])
-
   /** Update the thumb value */
   const updateValue = useEvent((newValue: number, fireEvent?: boolean) => {
     const rounded = round(newValue)
-    if (rounded !== nextValue.current) {
-      nextValue.current = rounded
-      setUpdated(true)
-      if (fireEvent) onValueChange?.(nextValue.current)
-    }
+    setValue(rounded)
+    if (fireEvent && rounded !== value) onValueChange?.(rounded)
   })
 
+  const roundValue = useEvent(() => round(value))
   // Update the value on bounds change
   React.useEffect(() => {
-    updateValue(nextValue.current)
-  }, [step, minimumValue, maximumValue, updateValue])
+    roundValue()
+  }, [step, minimumValue, maximumValue, roundValue])
 
   // Update the value on propchange
   React.useEffect(() => {
@@ -58,7 +46,7 @@ const useThumb = (props: Props) => {
    **/
   const canMove = useEvent((newValue: number) => {
     if (slideOnTap) return true
-    else return Math.abs(newValue - value) / ((maximumValue - minimumValue) || 1) < 0.1
+    else return Math.abs(newValue - value) < (step || (maximumValue - minimumValue) / 10 || 1)
   })
 
   return { updateValue: userUpdateValue, canMove, value }
