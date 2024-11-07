@@ -29,6 +29,7 @@ const styleSheet = RN.StyleSheet.create({
   }
 })
 const ResponderView = React.forwardRef<RN.View, Props>((props, ref) => {
+  const { width: windowWidth, height: windowHeight } = RN.useWindowDimensions()
   const {
     vertical, inverted, enabled,
     style,
@@ -53,15 +54,21 @@ const ResponderView = React.forwardRef<RN.View, Props>((props, ref) => {
   const round = useRounding({ step, minimumValue, maximumValue })
 
   const isVertical = React.useMemo(() => vertical || (style && (RN.StyleSheet.flatten(style).flexDirection || '').startsWith('column')), [vertical, style])
+
+  // See below for more details
   const originPageLocation = React.useRef({ pageX: 0, pageY: 0 })
+  React.useEffect(() => {
+    // We update the component's origin when the window size changes
+    fallbackRef.current?.measure((_x, _y, _width, _height, pageX = 0, pageY = 0) => (originPageLocation.current = { pageX, pageY }))
+  }, [windowWidth, windowHeight])
 
   /** Convert a touch event into it's position on the slider */
   const eventToValue = useEvent((event: RN.GestureResponderEvent) => {
     // We could simplify this code if this bug was solved:
     // https://github.com/Sharcoux/slider/issues/18#issuecomment-877411645
-    const { pageX, pageY } = event.nativeEvent
-    const x = pageX - originPageLocation.current.pageX
-    const y = pageY - originPageLocation.current.pageY
+    const { pageX, pageY, locationX, locationY } = event.nativeEvent
+    const x = RN.Platform.OS === 'web' ? locationX : (pageX - originPageLocation.current.pageX)
+    const y = RN.Platform.OS === 'web' ? locationY : (pageY - originPageLocation.current.pageY)
     const offset = isVertical ? y : x
     const size = containerSize.current?.[isVertical ? 'height' : 'width'] || 1
     const newValue = inverted
@@ -89,9 +96,7 @@ const ResponderView = React.forwardRef<RN.View, Props>((props, ref) => {
 
   const onLayout = useEvent((event: RN.LayoutChangeEvent) => {
     // For some reason, pageX and pageY might be 'undefined' in some cases
-    fallbackRef.current?.measure((_x, _y, _width, _height, pageX = 0, pageY = 0) => {
-      return (originPageLocation.current = { pageX, pageY })
-    })
+    fallbackRef.current?.measure((_x, _y, _width, _height, pageX = 0, pageY = 0) => (originPageLocation.current = { pageX, pageY }))
     onLayoutProp?.(event)
     containerSize.current = event.nativeEvent.layout
   })

@@ -102,10 +102,6 @@ import { RangeSlider } from '@react-native-assets/slider'
 
 The component is probably too narrow. Increase the height of the component to ensure a correct touch area
 
-- *The value gets wrong when my finger gets out of the slider on Android*
-
-There is an [open issue](https://github.com/facebook/react-native/issues/31843) on React Native project. Meanwhile, you can widen the Slider area using paddings if needed.
-
 ## Slider V8
 
 ### Changelog V 8.0.0:
