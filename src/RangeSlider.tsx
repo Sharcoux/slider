@@ -137,4 +137,4 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
 
 Slider.displayName = 'Slider'
 
-export default Slider
+export default React.memo(Slider)
