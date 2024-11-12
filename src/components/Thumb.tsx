@@ -112,7 +112,11 @@ const Thumb = ({
       } break
     }
   })
-  const accessibilityValues = React.useMemo(() => ({ min: minimumValue, max: maximumValue, now: value }), [minimumValue, maximumValue, value])
+  const accessibilityValues = React.useMemo(() => {
+    // Accessibility values cannot be decimal
+    const isDecimal = value % 1 !== 0 || minimumValue % 1 !== 0 || maximumValue % 1 !== 0 || step % 1 !== 0 || (step === 0 && ((maximumValue - minimumValue) / 10) % 1 !== 0)
+    return isDecimal ? { min: 0, max: 100, now: Math.round(value / ((maximumValue - minimumValue) || 1) * 100) } : { min: minimumValue, max: maximumValue, now: value }
+  }, [value, minimumValue, maximumValue, step])
 
   return <RN.View style={containerStyle}>
     <RN.View
