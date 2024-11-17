@@ -30,7 +30,7 @@ export type RangeSliderProps = RN.ViewProps & {
   thumbSize?: number;
   thumbImage?: RN.ImageURISource;
   crossingAllowed?: boolean;
-  onValueChange?: (range: [number, number]) => void;
+  onValueChange?: (range: [number, number]) => boolean | void;
   onSlidingStart?: (range: [number, number]) => void;
   onSlidingComplete?: (range: [number, number]) => void;
   CustomThumb?: React.ComponentType<{ value: number; thumb: 'min' | 'max' }>;

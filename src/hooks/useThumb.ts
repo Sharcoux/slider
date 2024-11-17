@@ -8,7 +8,7 @@ type Props = {
   minimumValue: number;
   maximumValue: number;
   slideOnTap: boolean | undefined;
-  onValueChange?: (value: number) => void;
+  onValueChange?: (value: number) => boolean | void;
 }
 
 /** Handle the state of a thumb for a slider */
@@ -20,8 +20,8 @@ const useThumb = (props: Props) => {
   /** Update the thumb value */
   const updateValue = useEvent((newValue: number, fireEvent?: boolean) => {
     const rounded = round(newValue)
-    setValue(rounded)
-    if (fireEvent && rounded !== value) onValueChange?.(rounded)
+    if (rounded === value) return
+    if (!fireEvent || onValueChange?.(rounded) !== false) setValue(rounded)
   })
 
   const roundValue = useEvent(() => round(value))

@@ -10,7 +10,7 @@ type Props = {
   maximumValue: number;
   slideOnTap?: boolean;
   crossingAllowed?: boolean;
-  onValueChange?: (range: [number, number]) => void;
+  onValueChange?: (range: [number, number]) => boolean | void;
 }
 
 /** Handle the state of a range slider */

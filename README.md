@@ -49,7 +49,7 @@ import { Slider } from '@react-native-assets/slider'
   thumbSize={15}                    // The thumb's size in pixel
   thumbImage={undefined}            // An image that would represent the thumb
   slideOnTap={true}                 // If true, touching the slider will update it's value. No need to slide the thumb.
-  onValueChange={undefined}         // Called each time the value changed. The type is (value: number) => void
+  onValueChange={undefined}         // Called each time the value changed. Return false to prevent the value from being updated. The type is (value: number) => boolean | void
   onSlidingStart={undefined}        // Called when the slider is pressed. The type is (value: number) => void
   onSlidingComplete={undefined}     // Called when the press is released. The type is (value: number) => void
   CustomThumb={undefined}           // Provide your own component to render the thumb. The type is a component: ({ value: number }) => JSX.Element
@@ -87,7 +87,7 @@ import { RangeSlider } from '@react-native-assets/slider'
   thumbSize={15}                    // The thumb's size in pixel
   thumbImage={undefined}            // An image that would represent the thumb
   slideOnTap={true}                 // If true, touching the slider will update it's value. No need to slide the thumb.
-  onValueChange={undefined}         // Called each time the value changed. The type is (range: [number, number]) => void
+  onValueChange={undefined}         // Called each time the value changed. Return false to prevent the value from being updated. The type is (range: [number, number]) => boolean | void
   onSlidingStart={undefined}        // Called when the slider is pressed. The type is (range: [number, number]) => void
   onSlidingComplete={undefined}     // Called when the press is released. The type is (range: [number, number]) => void
   CustomThumb={undefined}           // Provide your own component to render the thumb. The type is a component: ({ value: number, thumb: 'min' | 'max' }) => JSX.Element
@@ -102,10 +102,11 @@ import { RangeSlider } from '@react-native-assets/slider'
 
 The component is probably too narrow. Increase the height of the component to ensure a correct touch area
 
-## Slider V8
+## Slider V9
 
 ### Changelog V 9.0.0:
 
+ * You can prevent the slider from updating its value by returning false from the `onValueChange` callback
  * The default values have been changed for the `RangeSlider` component
 
 ### Changelog V 8.0.0:

@@ -27,7 +27,7 @@ export type SliderProps = RN.ViewProps & {
   trackHeight?: number;
   thumbSize?: number;
   thumbImage?: RN.ImageURISource;
-  onValueChange?: (value: number) => void;
+  onValueChange?: (value: number) => boolean | void;
   onSlidingStart?: (value: number) => void;
   onSlidingComplete?: (value: number) => void;
   CustomThumb?: React.ComponentType<{ value: number }>;
