@@ -7,7 +7,7 @@ import ResponderView from './components/ResponderView'
 import useDrag from './hooks/useDrag'
 import useCustomMarks from './hooks/useCustomMarks'
 
-export type SliderProps = RN.ViewProps & {
+export type RangeSliderProps = RN.ViewProps & {
   range?: [number, number];
   minimumValue?: number;
   maximumValue?: number;
@@ -37,13 +37,12 @@ export type SliderProps = RN.ViewProps & {
   CustomMark?: React.ComponentType<{ value: number; active: boolean }>;
 }
 
-const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwardedRef) => {
+const RangeSlider = React.forwardRef<RN.View, RangeSliderProps>((props: RangeSliderProps, forwardedRef) => {
   const {
     minimumValue = 0,
-    step = 0,
-    minimumRange = step,
-    maximumValue = minimumValue + minimumRange,
+    maximumValue = 1,
     range: propRange,
+    step = 0,
     outboundColor = 'grey',
     inboundColor = 'blue',
     thumbTintColor = 'darkcyan',
@@ -59,6 +58,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     trackHeight = 4,
     thumbSize = 15,
     thumbImage,
+    minimumRange = step,
     crossingAllowed = false,
     onValueChange,
     onSlidingStart,
@@ -135,6 +135,6 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
   )
 })
 
-Slider.displayName = 'Slider'
+RangeSlider.displayName = 'RangeSlider'
 
-export default React.memo(Slider)
+export default React.memo(RangeSlider)
