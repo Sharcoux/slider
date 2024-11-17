@@ -36,10 +36,10 @@ export type SliderProps = RN.ViewProps & {
 
 const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwardedRef) => {
   const {
-    minimumValue = 0,
-    maximumValue = 1,
-    value: propValue = minimumValue,
     step = 0,
+    minimumValue = 0,
+    maximumValue = minimumValue + step,
+    value: propValue = minimumValue,
     minimumTrackTintColor = 'grey',
     maximumTrackTintColor = 'grey',
     thumbTintColor = 'darkcyan',

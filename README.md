@@ -32,8 +32,8 @@ import { Slider } from '@react-native-assets/slider'
 
 <Slider
   value={0}                         // set the current slider's value
-  minimumValue={0}                  // Minimum value
-  maximumValue={1}                  // Maximum value
+  minimumValue={0}                  // Minimum value (defaults as 0)
+  maximumValue={0}                  // Maximum value (defaults as minimumValue + step)
   step={0}                          // The step for the slider (0 means that the slider will handle any decimal value within the range [min, max])
   minimumTrackTintColor='grey'      // The track color before the current value
   maximumTrackTintColor='grey'      // The track color after the current value
@@ -66,11 +66,11 @@ You can see below the available props with their respective default values
 import { RangeSlider } from '@react-native-assets/slider'
 
 <RangeSlider
-  range={[0, 1]}                    // set the current slider's value
-  minimumValue={0}                  // Minimum value
-  maximumValue={1}                  // Maximum value
+  range={[0, 0]}                    // set the current slider's value
   step={0}                          // The step for the slider (0 means that the slider will handle any decimal value within the range [min, max])
   minimumRange={0}                  // Minimum range between the two thumbs (defaults as "step")
+  minimumValue={0}                  // Minimum value (defaults as 0)
+  maximumValue={0}                  // Maximum value (defaults as minimumValue + minimumRange)
   crossingAllowed={false}           // If true, the user can make one thumb cross over the second thumb
   outboundColor='grey'              // The track color outside the current range value
   inboundColor='grey'               // The track color inside the current range value
@@ -103,6 +103,10 @@ import { RangeSlider } from '@react-native-assets/slider'
 The component is probably too narrow. Increase the height of the component to ensure a correct touch area
 
 ## Slider V8
+
+### Changelog V 9.0.0:
+
+ * The default values have been changed for the `RangeSlider` component
 
 ### Changelog V 8.0.0:
 
