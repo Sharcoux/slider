@@ -32,6 +32,7 @@ export type SliderProps = RN.ViewProps & {
   onSlidingComplete?: (value: number) => void;
   CustomThumb?: React.ComponentType<{ value: number }>;
   CustomMark?: React.ComponentType<{ value: number; active: boolean }>;
+  CustomTrack?: React.ComponentType<{ length: number; thickness: number; vertical: boolean; track: 'min' | 'max' ; style: RN.StyleProp<RN.ViewStyle>; color: RN.ColorValue }>;
 }
 
 const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwardedRef) => {
@@ -58,6 +59,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     onSlidingStart,
     onSlidingComplete,
     CustomThumb,
+    CustomTrack,
     CustomMark,
     ...others
   } = props
@@ -75,10 +77,11 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
 
   const percentage = React.useMemo(() => (value - minimumValue) / ((maximumValue - minimumValue) || 1), [value, minimumValue, maximumValue])
 
-  const { minStyle, maxStyle } = React.useMemo(() => ({
-    minStyle: (trackStyle && minTrackStyle) ? [trackStyle, minTrackStyle] : trackStyle || minTrackStyle,
-    maxStyle: (trackStyle && maxTrackStyle) ? [trackStyle, maxTrackStyle] : trackStyle || maxTrackStyle
-  }), [trackStyle, minTrackStyle, maxTrackStyle])
+  const [minStyle, maxStyle] = React.useMemo(() =>
+    [minTrackStyle, maxTrackStyle].map(
+      style => (style && trackStyle) ? [style, trackStyle] : (style || trackStyle)
+    ), [trackStyle, minTrackStyle, maxTrackStyle]
+  )
 
   const thumbProps = React.useMemo(() => ({
     color: thumbTintColor,
@@ -90,6 +93,13 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     maximumValue,
     step
   }), [CustomThumb, maximumValue, minimumValue, step, thumbImage, thumbSize, thumbStyle, thumbTintColor])
+
+  const trackProps = React.useMemo(() => ({
+    thickness: trackHeight,
+    // We pretend to accept "mid" as value for track, but we don't use it
+    CustomTrack: CustomTrack as React.ComponentType<{ length: number; thickness: number; vertical: boolean; track: 'min' | 'mid' | 'max' ; style: RN.StyleProp<RN.ViewStyle>; color: RN.ColorValue }>,
+    vertical
+  }), [trackHeight, CustomTrack, vertical])
 
   const { marks, onLayoutUpdateMarks } = useCustomMarks(CustomMark, { step, minimumValue, maximumValue, activeValues: [value], inverted, vertical })
 
@@ -108,9 +118,9 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
       inverted={inverted}
       onLayout={onLayoutUpdateMarks}
     >
-      <Track color={minimumTrackTintColor} style={minStyle} length={percentage * 100} vertical={vertical} thickness={trackHeight} />
+      <Track {...trackProps} color={minimumTrackTintColor} style={minStyle} length={percentage * 100} track='min' />
       <Thumb {...thumbProps} updateValue={updateValue} value={value} />
-      <Track color={maximumTrackTintColor} style={maxStyle} length={(1 - percentage) * 100} vertical={vertical} thickness={trackHeight} />
+      <Track {...trackProps} color={maximumTrackTintColor} style={maxStyle} length={(1 - percentage) * 100} track='max' />
       {marks}
     </ResponderView>
   )

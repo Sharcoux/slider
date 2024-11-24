@@ -35,6 +35,7 @@ export type RangeSliderProps = RN.ViewProps & {
   onSlidingComplete?: (range: [number, number]) => void;
   CustomThumb?: React.ComponentType<{ value: number; thumb: 'min' | 'max' }>;
   CustomMark?: React.ComponentType<{ value: number; active: boolean }>;
+  CustomTrack?: React.ComponentType<{ length: number; thickness: number; vertical: boolean; track: 'min' | 'mid' | 'max' ; style: RN.StyleProp<RN.ViewStyle>; color: RN.ColorValue }>;
 }
 
 const RangeSlider = React.forwardRef<RN.View, RangeSliderProps>((props: RangeSliderProps, forwardedRef) => {
@@ -64,6 +65,7 @@ const RangeSlider = React.forwardRef<RN.View, RangeSliderProps>((props: RangeSli
     onSlidingStart,
     onSlidingComplete,
     CustomThumb,
+    CustomTrack,
     CustomMark,
     ...others
   } = props
@@ -91,11 +93,11 @@ const RangeSlider = React.forwardRef<RN.View, RangeSliderProps>((props: RangeSli
   const minTrackPct = React.useMemo(() => (min - minimumValue) / ((maximumValue - minimumValue) || 1), [min, minimumValue, maximumValue])
   const maxTrackPct = React.useMemo(() => (max - minimumValue) / ((maximumValue - minimumValue) || 1), [max, minimumValue, maximumValue])
 
-  const { minStyle, midStyle, maxStyle } = React.useMemo(() => ({
-    minStyle: (trackStyle && minTrackStyle) ? [trackStyle, minTrackStyle] : trackStyle || minTrackStyle,
-    midStyle: (trackStyle && midTrackStyle) ? [trackStyle, midTrackStyle] : trackStyle || midTrackStyle,
-    maxStyle: (trackStyle && maxTrackStyle) ? [trackStyle, maxTrackStyle] : trackStyle || maxTrackStyle
-  }), [trackStyle, minTrackStyle, midTrackStyle, maxTrackStyle])
+  const [minStyle, midStyle, maxStyle] = React.useMemo(() =>
+    [minTrackStyle, midTrackStyle, maxTrackStyle].map(
+      style => (style && trackStyle) ? [style, trackStyle] : (style || trackStyle)
+    ), [trackStyle, minTrackStyle, midTrackStyle, maxTrackStyle]
+  )
 
   const thumbProps = React.useMemo(() => ({
     color: thumbTintColor,
@@ -107,6 +109,12 @@ const RangeSlider = React.forwardRef<RN.View, RangeSliderProps>((props: RangeSli
     maximumValue,
     step
   }), [CustomThumb, maximumValue, minimumValue, step, thumbImage, thumbSize, thumbStyle, thumbTintColor])
+
+  const trackProps = React.useMemo(() => ({
+    thickness: trackHeight,
+    CustomTrack,
+    vertical
+  }), [trackHeight, CustomTrack, vertical])
 
   const { marks, onLayoutUpdateMarks } = useCustomMarks(CustomMark, { step, minimumValue, maximumValue, activeValues: range, inverted, vertical })
 
@@ -125,11 +133,11 @@ const RangeSlider = React.forwardRef<RN.View, RangeSliderProps>((props: RangeSli
       inverted={inverted}
       onLayout={onLayoutUpdateMarks}
     >
-      <Track color={outboundColor} style={minStyle} length={minTrackPct * 100} vertical={vertical} thickness={trackHeight} />
+      <Track {...trackProps} color={outboundColor} style={minStyle} length={minTrackPct * 100} track='min' />
       <Thumb key='min' {...thumbProps} updateValue={updateMinValue} value={min} thumb='min' />
-      <Track color={inboundColor} style={midStyle} length={(maxTrackPct - minTrackPct) * 100} vertical={vertical} thickness={trackHeight} />
+      <Track {...trackProps} color={inboundColor} style={midStyle} length={(maxTrackPct - minTrackPct) * 100} track='mid' />
       <Thumb key='max' {...thumbProps} updateValue={updateMaxValue} value={max} thumb='max' />
-      <Track color={outboundColor} style={maxStyle} length={(1 - maxTrackPct) * 100} vertical={vertical} thickness={trackHeight} />
+      <Track {...trackProps} color={outboundColor} style={maxStyle} length={(1 - maxTrackPct) * 100} track='max' />
       {marks}
     </ResponderView>
   )

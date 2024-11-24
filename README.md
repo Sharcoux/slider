@@ -104,6 +104,10 @@ The component is probably too narrow. Increase the height of the component to en
 
 ## Slider V9
 
+### Changelog V 9.1.0:
+
+ * It is now possible to provide a custom `CustomTrack` component to render the track
+
 ### Changelog V 9.0.0:
 
  * You can prevent the slider from updating its value by returning false from the `onValueChange` callback

@@ -35,6 +35,26 @@ const CustomThumb = ({ value }) => {
   return <Text>{value}</Text>
 }
 
+const CustomTrack = ({ thickness, vertical, color, style }) => {
+  return (
+    <View
+      style={[
+        style,
+        {
+          borderStyle: 'dashed',
+          borderTopWidth: vertical ? 0 : thickness / 2,
+          borderBottomWidth: vertical ? 0 : thickness / 2,
+          borderLeftWidth: vertical ? thickness / 2 : 0,
+          borderRightWidth: vertical ? thickness / 2 : 0,
+          borderColor: color,
+          backgroundColor: 'transparent',
+          [vertical ? 'width' : 'height']: 0
+        }
+      ]}
+    />
+  )
+}
+
 const App = () => {
   const [value, setValue] = React.useState(0)
   const [range, setRange] = React.useState<[number, number]>([0, 0])
@@ -75,6 +95,7 @@ const App = () => {
           step={1}
           inverted={true}
           vertical={true}
+          CustomTrack={CustomTrack}
           onValueChange={setValue}
           minimumTrackTintColor="blue"
           maximumTrackTintColor="red"

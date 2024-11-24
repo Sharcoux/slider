@@ -2,11 +2,13 @@ import React from 'react'
 import * as RN from 'react-native'
 
 type Props = {
-  style?: RN.StyleProp<RN.ViewStyle>;
+  style: RN.StyleProp<RN.ViewStyle>;
   color: RN.ColorValue;
   vertical: boolean;
   thickness: number;
   length: number;
+  track: 'min' | 'mid' | 'max';
+  CustomTrack?: React.ComponentType<{ length: number; thickness: number; vertical: boolean; track: 'min' | 'mid' | 'max' ; style: RN.StyleProp<RN.ViewStyle>; color: RN.ColorValue; }>
 }
 
 function getTrackStyle (length: number, thickness: number, color: RN.ColorValue, vertical: boolean) {
@@ -25,12 +27,12 @@ function getTrackStyle (length: number, thickness: number, color: RN.ColorValue,
   }).thumb
 }
 
-const Track = ({ style, thickness, length, vertical, color = 'grey' }: Props) => {
+const Track = ({ style, thickness, length, vertical, color = 'grey', CustomTrack, track }: Props) => {
   const trackViewStyle = React.useMemo<RN.StyleProp<RN.ViewStyle>>(() => [
     getTrackStyle(length, thickness, color, vertical), style
   ], [length, thickness, color, vertical, style])
 
-  return <RN.View style={trackViewStyle} />
+  return CustomTrack ? <CustomTrack style={trackViewStyle} color={color} length={length} thickness={thickness} vertical={vertical} track={track} /> : <RN.View style={trackViewStyle} />
 }
 
 export default React.memo(Track)
