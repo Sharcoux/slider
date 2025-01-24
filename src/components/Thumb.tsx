@@ -6,7 +6,6 @@ export type ThumbProps = {
   style?: RN.StyleProp<RN.ViewStyle>;
   color?: RN.ColorValue;
   size: number;
-  thumbRadius?: number
   thumbImage?: RN.ImageURISource;
   thumb?: 'min' | 'max'
   value: number
@@ -16,6 +15,20 @@ export type ThumbProps = {
   updateValue: (value: number) => void
   CustomThumb?: React.ComponentType<{ value: number; thumb?: 'min' | 'max' }>;
 }
+
+// without a size, the thumb becomes impossible to select with key navigation
+export const THUMB_SIZE = 1
+
+const stylesheet = RN.StyleSheet.create({
+  container: {
+    width: THUMB_SIZE,
+    height: THUMB_SIZE,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'visible',
+    zIndex: 2
+  }
+})
 
 function getThumbContainerStyle (size?: number) {
   // This is used for feedback on focus on the thumb.
@@ -38,19 +51,6 @@ function getThumbContainerStyle (size?: number) {
   }).thumbContainer
 }
 
-function getContainerStyle (thumbRadius: number) {
-  return RN.StyleSheet.create({
-    container: {
-      width: thumbRadius,
-      height: thumbRadius,
-      justifyContent: 'center',
-      alignItems: 'center',
-      overflow: 'visible',
-      zIndex: 2
-    }
-  }).container
-}
-
 function getThumbStyle (size: number, color: RN.ColorValue) {
   return RN.StyleSheet.create({
     thumb: {
@@ -58,7 +58,9 @@ function getThumbStyle (size: number, color: RN.ColorValue) {
       height: size,
       backgroundColor: color,
       borderRadius: size / 2,
-      overflow: 'hidden'
+      overflow: 'hidden',
+      elevation: 10,
+      zIndex: 10
     }
   }).thumb
 }
@@ -72,7 +74,6 @@ const Thumb = ({
   color = 'darkcyan',
   CustomThumb,
   size = 15,
-  thumbRadius = 0,
   style, thumbImage,
   thumb,
   value,
@@ -82,7 +83,6 @@ const Thumb = ({
   updateValue
 }: ThumbProps) => {
   const thumbContainerStyle = React.useMemo<RN.StyleProp<RN.ViewStyle>>(() => getThumbContainerStyle(CustomThumb ? undefined : size), [CustomThumb, size])
-  const containerStyle = React.useMemo<RN.StyleProp<RN.ViewStyle>>(() => getContainerStyle(thumbRadius), [thumbRadius])
   const thumbViewStyle = React.useMemo<RN.StyleProp<RN.ImageStyle>>(() => [getThumbStyle(size, color), style as RN.ImageStyle], [style, size, color])
 
   // Accessibility actions
@@ -118,7 +118,7 @@ const Thumb = ({
     return isDecimal ? { min: 0, max: 100, now: Math.round(value / ((maximumValue - minimumValue) || 1) * 100) } : { min: minimumValue, max: maximumValue, now: value }
   }, [value, minimumValue, maximumValue, step])
 
-  return <RN.View style={containerStyle}>
+  return <RN.View style={stylesheet.container}>
     <RN.View
       accessibilityActions={accessibility}
       onAccessibilityAction={accessibilityActions}

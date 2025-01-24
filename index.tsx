@@ -35,6 +35,11 @@ const CustomThumb = ({ value }) => {
   return <Text>{value}</Text>
 }
 
+const CustomMark = ({ active }) => {
+  const backgroundColor = active ? 'red' : 'grey'
+  return <View style={{ backgroundColor, width: 2, height: 8, position: 'absolute', alignSelf: 'center' }} />
+}
+
 const CustomTrack = ({ thickness, vertical, color, style }) => {
   return (
     <View
@@ -82,6 +87,7 @@ const App = () => {
           maximumValue={100}
           value={value}
           CustomThumb={CustomThumb}
+          CustomMark={CustomMark}
           step={10}
           onValueChange={setValue}
           minimumTrackTintColor="blue"
@@ -130,6 +136,7 @@ const App = () => {
           range={range}
           step={1}
           CustomThumb={CustomThumb}
+          CustomMark={CustomMark}
           onValueChange={setRange}
           outboundColor="blue"
           inboundColor="red"

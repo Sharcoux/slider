@@ -5,7 +5,7 @@ import Track from './components/Track'
 import Thumb from './components/Thumb'
 import ResponderView from './components/ResponderView'
 import useDrag from './hooks/useDrag'
-import useCustomMarks from './hooks/useCustomMarks'
+import Marks from './components/Marks'
 
 export type SliderProps = RN.ViewProps & {
   value?: number;
@@ -83,7 +83,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     ), [trackStyle, minTrackStyle, maxTrackStyle]
   )
 
-  const thumbProps = React.useMemo(() => ({
+  const thumbProps = {
     color: thumbTintColor,
     style: thumbStyle,
     size: thumbSize,
@@ -92,16 +92,16 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     minimumValue,
     maximumValue,
     step
-  }), [CustomThumb, maximumValue, minimumValue, step, thumbImage, thumbSize, thumbStyle, thumbTintColor])
+  }
 
-  const trackProps = React.useMemo(() => ({
+  const trackProps = {
     thickness: trackHeight,
     // We pretend to accept "mid" as value for track, but we don't use it
     CustomTrack: CustomTrack as React.ComponentType<{ length: number; thickness: number; vertical: boolean; track: 'min' | 'mid' | 'max' ; style: RN.StyleProp<RN.ViewStyle>; color: RN.ColorValue }>,
     vertical
-  }), [trackHeight, CustomTrack, vertical])
+  }
 
-  const { marks, onLayoutUpdateMarks } = useCustomMarks(CustomMark, { step, minimumValue, maximumValue, activeValues: [value], inverted, vertical })
+  const marksProps = { CustomMark, step, minimumValue, maximumValue, activeValues: [value], inverted, vertical }
 
   return (
     <ResponderView
@@ -116,12 +116,11 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
       enabled={enabled}
       vertical={vertical}
       inverted={inverted}
-      onLayout={onLayoutUpdateMarks}
     >
       <Track {...trackProps} color={minimumTrackTintColor} style={minStyle} length={percentage * 100} track='min' />
       <Thumb {...thumbProps} updateValue={updateValue} value={value} />
       <Track {...trackProps} color={maximumTrackTintColor} style={maxStyle} length={(1 - percentage) * 100} track='max' />
-      {marks}
+      <Marks {...marksProps} />
     </ResponderView>
   )
 }

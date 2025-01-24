@@ -102,6 +102,13 @@ import { RangeSlider } from '@react-native-assets/slider'
 
 The component is probably too narrow. Increase the height of the component to ensure a correct touch area
 
+## Slider V10
+
+### Changelog V 10.0.0:
+
+ * Fix the implementation of the `CustomMark` optional component. It had a wrong size and wrong position
+ * Use a size of 1px for the thumb container because 0 was breaking accessibility
+
 ## Slider V9
 
 ### Changelog V 9.1.0:
@@ -129,18 +136,18 @@ The component is probably too narrow. Increase the height of the component to en
 
 ### Changelog V 7.0.0:
 
- * Add CustomMark prop to provide your own component to render the places where the thumb can stop
+ * Add `CustomMark` prop to provide your own component to render the places where the thumb can stop
  * Wrap the Responder view inside a wrapper to provide more accurate control over the component
 
 ### Changelog V 6.0.0:
 
  * Call prevent default on mouse events to avoid weird interactions
  * Improve performances
- * Add a padding around the RangeSlider too
+ * Add a padding around the `RangeSlider` too
 
 ### Changelog V 5.6.3:
 
- * Fix Slider value not updating when provided through props
+ * Fix `Slider` value not updating when provided through props
  * Fix a performance issue
 
 ### Changelog V 5.5.1:

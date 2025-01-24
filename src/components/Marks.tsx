@@ -1,12 +1,22 @@
 import React from 'react'
 import { StyleSheet, View, ViewProps } from 'react-native'
-import useRounding from './useRounding'
+import useRounding from '../hooks/useRounding'
+import { useEvent } from '../hooks/useEvent'
+import { THUMB_SIZE } from './Thumb'
 
 export type CustomMarkType = React.ComponentType<{ value: number; active: boolean }>
 
 const styleSheet = StyleSheet.create({
-  mark: {
+  container: {
     position: 'absolute',
+    left: 0,
+    height: '100%',
+    width: '100%',
+    top: 0,
+    margin: 'auto',
+    overflow: 'visible'
+  },
+  mark: {
     alignItems: 'center',
     justifyContent: 'center',
     width: 0,
@@ -32,30 +42,30 @@ const Mark = ({ CustomMark, left, top, ...props }: MarkProps) => {
 }
 
 type CustomMarksProps = {
+  CustomMark?: CustomMarkType
   minimumValue: number
   maximumValue: number
   step: number
-  thumbRadius?: number
   activeValues: number[]
   inverted: boolean
   vertical: boolean
 }
-const useCustomMarks = (CustomMark: CustomMarkType | undefined, { step, minimumValue, maximumValue, activeValues, thumbRadius = 0, inverted, vertical }: CustomMarksProps) => {
+const Marks = ({ CustomMark, step, minimumValue, maximumValue, activeValues, inverted, vertical }: CustomMarksProps) => {
   const [sliderWidth, setSliderWidth] = React.useState(0)
   const [sliderHeight, setSliderHeight] = React.useState(0)
-  const onLayoutUpdateMarks = React.useCallback<Exclude<ViewProps['onLayout'], undefined>>((event) => {
+  const onLayoutUpdateMarks = useEvent<Exclude<ViewProps['onLayout'], undefined>>((event) => {
     const { width, height } = event.nativeEvent.layout
     setSliderWidth(width)
     setSliderHeight(height)
-  }, [])
+  })
 
   const round = useRounding({ step, minimumValue, maximumValue })
-  const marks = React.useMemo<JSX.Element[]>(() => {
-    if (!CustomMark) return []
+  const marks = React.useMemo<JSX.Element[] | null>(() => {
+    if (!CustomMark) return null
     const markCount = Math.round((maximumValue - minimumValue) / (step || 1)) + 1
     return Array(markCount).fill(0).map((_, index) => {
       const markValue = round(index * step + minimumValue)
-      const advance = ((vertical ? sliderHeight : sliderWidth) - thumbRadius) * (markValue - minimumValue) / ((maximumValue - minimumValue) || 1) + thumbRadius / 2
+      const advance = ((vertical ? sliderHeight : sliderWidth) - THUMB_SIZE) * (markValue - minimumValue) / ((maximumValue - minimumValue) || 1) + THUMB_SIZE / 2
       const padding = (vertical ? sliderWidth : sliderHeight) / 2
       const x = inverted ? (vertical ? sliderHeight : sliderWidth) - advance : advance
       const y = padding
@@ -66,11 +76,11 @@ const useCustomMarks = (CustomMark: CustomMarkType | undefined, { step, minimumV
         active={activeValues.includes(markValue)}
         top={vertical ? x : y}
         left={vertical ? y : x}
-      />
+        />
     })
-  }, [CustomMark, activeValues, inverted, maximumValue, minimumValue, round, sliderHeight, sliderWidth, step, thumbRadius, vertical])
+  }, [CustomMark, activeValues, inverted, maximumValue, minimumValue, round, sliderHeight, sliderWidth, step, vertical])
 
-  return { marks, onLayoutUpdateMarks }
+  return <View style={styleSheet.container} onLayout={onLayoutUpdateMarks}>{marks}</View>
 }
 
-export default useCustomMarks
+export default Marks
