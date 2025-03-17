@@ -34,7 +34,7 @@ const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumV
 
   // Max value thumb
   const { updateValue: updateMaxValue, canMove: canMoveMax, value: maxValue } = useThumb({
-    minimumValue: Math.min(maximumValue, minRef.current + minimumRange),
+    minimumValue: Math.min(maximumValue, minProp + minimumRange),
     maximumValue,
     value: maxProp,
     step,
