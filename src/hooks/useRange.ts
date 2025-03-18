@@ -19,6 +19,15 @@ const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumV
   const minRef = React.useRef<number>(minProp)
   const maxRef = React.useRef<number>(maxProp)
 
+  // When updating the props, we immediately apply the change to the refs in order to have the correct values in useThumb
+  React.useMemo(() => {
+    minRef.current = Math.max(minimumValue, minProp)
+  }, [minProp, minimumValue])
+
+  React.useMemo(() => {
+    maxRef.current = Math.min(maximumValue, maxProp)
+  }, [maxProp, maximumValue])
+
   const onMinChange = useEvent((min: number) => onValueChange?.([min, maxRef.current].sort((a, b) => a - b) as [number, number]))
   const onMaxChange = useEvent((max: number) => onValueChange?.([minRef.current, max].sort((a, b) => a - b) as [number, number]))
 
@@ -31,6 +40,7 @@ const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumV
     slideOnTap,
     onValueChange: onMinChange
   })
+  minRef.current = minValue
 
   // Max value thumb
   const { updateValue: updateMaxValue, canMove: canMoveMax, value: maxValue } = useThumb({
@@ -41,9 +51,8 @@ const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumV
     slideOnTap,
     onValueChange: onMaxChange
   })
-
-  minRef.current = minValue
   maxRef.current = maxValue
+
   const range = React.useMemo(() => [minValue, maxValue].sort((a, b) => a - b) as [number, number], [maxValue, minValue])
 
   const currentThumb = React.useRef<'min' | 'max'>()
