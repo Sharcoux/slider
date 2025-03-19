@@ -62,10 +62,10 @@ const CustomTrack = ({ thickness, vertical, color, style }) => {
 
 const App = () => {
   const [value, setValue] = React.useState(0)
-  const [range, setRange] = React.useState<[number, number]>([0, 0])
-  const [max, setMax] = React.useState(1)
+  const [range, setRange] = React.useState<[number, number]>([0, 1])
+  const [max] = React.useState(1)
   React.useEffect(() => {
-    setInterval(() => setMax((max) => max + 1), 2000)
+    setInterval(() => setRange(([min, max]) => [min + 2, max + 2]), 2000)
   }, [])
   return (
     <View>
