@@ -53,7 +53,8 @@ import { Slider } from '@react-native-assets/slider'
   onSlidingStart={undefined}        // Called when the slider is pressed. The type is (value: number) => void
   onSlidingComplete={undefined}     // Called when the press is released. The type is (value: number) => void
   CustomThumb={undefined}           // Provide your own component to render the thumb. The type is a component: ({ value: number }) => JSX.Element
-  CustomMark={undefined}            // Provide your own component to render the marks. The type is a component: ({ value: number; active: boolean }) => JSX.Element ; value indicates the value represented by the mark, while active indicates wether a thumb is currently standing on the mark
+  StepMarker={undefined}            // We now use the component from @callstack/slider to preserve the same API. See the documentation [here](https://github.com/callstack/react-native-slider?tab=readme-ov-file#stepmarker). We add "markValue" that holds the value of the current mark instead of the index only.
+  CustomTrack={undefined}           // Provide your own component to render the track. The type is a component: ({ length: number; thickness: number; vertical: boolean; track: 'min' | 'max' ; style: RN.StyleProp<RN.ViewStyle>; color: RN.ColorValue }) => JSX.Element ; The props describe how the default system would expect the track to be rendered, but you can ignore them if you want to provide your own implementation
   {...props}                        // Add any View Props that will be applied to the container (style, ref, etc)
 />
 ```
@@ -91,7 +92,8 @@ import { RangeSlider } from '@react-native-assets/slider'
   onSlidingStart={undefined}        // Called when the slider is pressed. The type is (range: [number, number]) => void
   onSlidingComplete={undefined}     // Called when the press is released. The type is (range: [number, number]) => void
   CustomThumb={undefined}           // Provide your own component to render the thumb. The type is a component: ({ value: number, thumb: 'min' | 'max' }) => JSX.Element
-  CustomMark={undefined}            // Provide your own component to render the marks. The type is a component: ({ value: number; active: boolean }) => JSX.Element ; value indicates the value represented by the mark, while active indicates wether a thumb is currently standing on the mark
+  StepMarker={undefined}            // We now use the component from @callstack/slider to preserve the same API. See the documentation [here](https://github.com/callstack/react-native-slider?tab=readme-ov-file#stepmarker). We add "markValue" that holds the value of the current mark instead of the index only.
+  CustomTrack={undefined}           // Provide your own component to render the track. The type is a component: ({ length: number; thickness: number; vertical: boolean; track: 'min' | 'max' ; style: RN.StyleProp<RN.ViewStyle>; color: RN.ColorValue }) => JSX.Element ; The props describe how the default system would expect the track to be rendered, but you can ignore them if you want to provide your own implementation
   {...props}                        // Add any View Props that will be applied to the container (style, ref, etc)
 />
 ```
@@ -102,7 +104,11 @@ import { RangeSlider } from '@react-native-assets/slider'
 
 The component is probably too narrow. Increase the height of the component to ensure a correct touch area
 
-## Slider V10
+## Slider V11
+
+### Changelog V 11.0.0:
+
+ * **Breaking change:** Replace `CustomMark` prop with `StepMarker` prop so we follow the same API as @callstack/slider in order to ease migration
 
 ### Changelog V 10.0.0:
 

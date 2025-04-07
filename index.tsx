@@ -35,8 +35,13 @@ const CustomThumb = ({ value }) => {
   return <Text>{value}</Text>
 }
 
-const CustomMark = ({ active }) => {
-  const backgroundColor = active ? 'red' : 'grey'
+const CustomSliderMark = ({ currentValue, markValue }: { currentValue: number, markValue: number }) => {
+  const backgroundColor = currentValue < markValue ? 'red' : 'blue'
+  return <View style={{ backgroundColor, width: 2, height: 8, position: 'absolute', alignSelf: 'center' }} />
+}
+
+const CustomRangeMark = ({ currentValue, markValue }: { currentValue: [number, number], markValue: number }) => {
+  const backgroundColor = currentValue[0] > markValue ? 'red' : currentValue[1] < markValue ? 'blue' : 'orange'
   return <View style={{ backgroundColor, width: 2, height: 8, position: 'absolute', alignSelf: 'center' }} />
 }
 
@@ -87,7 +92,7 @@ const App = () => {
           maximumValue={100}
           value={value}
           CustomThumb={CustomThumb}
-          CustomMark={CustomMark}
+          StepMarker={CustomSliderMark}
           step={10}
           onValueChange={setValue}
           minimumTrackTintColor="blue"
@@ -136,7 +141,8 @@ const App = () => {
           range={range}
           step={1}
           CustomThumb={CustomThumb}
-          CustomMark={CustomMark}
+          StepMarker={CustomRangeMark}
+          onSlidingComplete={console.log}
           onValueChange={setRange}
           outboundColor="blue"
           inboundColor="red"

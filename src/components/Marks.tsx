@@ -4,7 +4,9 @@ import useRounding from '../hooks/useRounding'
 import { useEvent } from '../hooks/useEvent'
 import { THUMB_SIZE } from './Thumb'
 
-export type CustomMarkType = React.ComponentType<{ value: number; active: boolean }>
+type SliderType = 'slider' | 'range'
+type SliderValue<T extends SliderType> = T extends 'slider' ? number : [number, number]
+export type CustomMarkType<T extends 'slider' | 'range'> = React.ComponentType<{ stepMarked: boolean; currentValue: SliderValue<T>; index: number; min: number; max: number; markValue: number }>;
 
 const styleSheet = StyleSheet.create({
   container: {
@@ -27,30 +29,37 @@ const styleSheet = StyleSheet.create({
   }
 })
 
-type MarkProps = {
-  CustomMark: CustomMarkType
-  value: number
-  active: boolean
+type MarkProps<T extends 'slider' | 'range'> = {
+  StepMarker: CustomMarkType<T>
+  stepMarked: boolean
+  markValue: number
+  index: number
+  min: number
+  max: number
   left: number
   top: number
+  currentValue: SliderValue<T>
 }
-const Mark = ({ CustomMark, left, top, ...props }: MarkProps) => {
+
+const Mark = <T extends 'slider' | 'range'>({ StepMarker, left, top, ...props }: MarkProps<T>) => {
   const style = React.useMemo(() => ([styleSheet.mark, { top, left }]), [top, left])
   return <View style={style}>
-    <CustomMark {...props} />
+    <StepMarker {...props} />
   </View>
 }
 
-type CustomMarksProps = {
-  CustomMark?: CustomMarkType
+type CustomMarksProps<T extends 'slider' | 'range'> = {
+  StepMarker?: CustomMarkType<T>
   minimumValue: number
   maximumValue: number
   step: number
-  activeValues: number[]
+  activeValue: SliderValue<T>
+  type: T
   inverted: boolean
   vertical: boolean
 }
-const Marks = ({ CustomMark, step, minimumValue, maximumValue, activeValues, inverted, vertical }: CustomMarksProps) => {
+const Marks = <T extends 'slider' | 'range'>(props: CustomMarksProps<T>) => {
+  const { StepMarker, step, minimumValue, maximumValue, inverted, vertical, activeValue } = props
   const [sliderWidth, setSliderWidth] = React.useState(0)
   const [sliderHeight, setSliderHeight] = React.useState(0)
   const onLayoutUpdateMarks = useEvent<Exclude<ViewProps['onLayout'], undefined>>((event) => {
@@ -61,7 +70,7 @@ const Marks = ({ CustomMark, step, minimumValue, maximumValue, activeValues, inv
 
   const round = useRounding({ step, minimumValue, maximumValue })
   const marks = React.useMemo<JSX.Element[] | null>(() => {
-    if (!CustomMark) return null
+    if (!StepMarker) return null
     const markCount = Math.round((maximumValue - minimumValue) / (step || 1)) + 1
     return Array(markCount).fill(0).map((_, index) => {
       const markValue = round(index * step + minimumValue)
@@ -71,14 +80,18 @@ const Marks = ({ CustomMark, step, minimumValue, maximumValue, activeValues, inv
       const y = padding
       return <Mark
         key={markValue}
-        CustomMark={CustomMark}
-        value={markValue}
-        active={activeValues.includes(markValue)}
+        StepMarker={StepMarker}
+        stepMarked={Array.isArray(activeValue) ? activeValue.includes(markValue) : activeValue === markValue}
+        currentValue={activeValue}
+        markValue={markValue}
+        index={index}
+        min={minimumValue}
+        max={maximumValue}
         top={vertical ? x : y}
         left={vertical ? y : x}
         />
     })
-  }, [CustomMark, activeValues, inverted, maximumValue, minimumValue, round, sliderHeight, sliderWidth, step, vertical])
+  }, [StepMarker, activeValue, inverted, maximumValue, minimumValue, round, sliderHeight, sliderWidth, step, vertical])
 
   return <View style={styleSheet.container} onLayout={onLayoutUpdateMarks}>{marks}</View>
 }

@@ -5,7 +5,7 @@ import Track from './components/Track'
 import Thumb from './components/Thumb'
 import ResponderView from './components/ResponderView'
 import useDrag from './hooks/useDrag'
-import Marks from './components/Marks'
+import Marks, { CustomMarkType } from './components/Marks'
 
 export type SliderProps = RN.ViewProps & {
   value?: number;
@@ -31,7 +31,7 @@ export type SliderProps = RN.ViewProps & {
   onSlidingStart?: (value: number) => void;
   onSlidingComplete?: (value: number) => void;
   CustomThumb?: React.ComponentType<{ value: number }>;
-  CustomMark?: React.ComponentType<{ value: number; active: boolean }>;
+  StepMarker?: CustomMarkType<'slider'>
   CustomTrack?: React.ComponentType<{ length: number; thickness: number; vertical: boolean; track: 'min' | 'max' ; style: RN.StyleProp<RN.ViewStyle>; color: RN.ColorValue }>;
 }
 
@@ -60,7 +60,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     onSlidingComplete,
     CustomThumb,
     CustomTrack,
-    CustomMark,
+    StepMarker,
     ...others
   } = props
 
@@ -101,7 +101,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
     vertical
   }
 
-  const marksProps = { CustomMark, step, minimumValue, maximumValue, activeValues: [value], inverted, vertical }
+  const marksProps = { StepMarker, step, minimumValue, maximumValue, activeValue: value, inverted, vertical }
 
   return (
     <ResponderView
@@ -120,7 +120,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
       <Track {...trackProps} color={minimumTrackTintColor} style={minStyle} length={percentage * 100} track='min' />
       <Thumb {...thumbProps} updateValue={updateValue} value={value} />
       <Track {...trackProps} color={maximumTrackTintColor} style={maxStyle} length={(1 - percentage) * 100} track='max' />
-      <Marks {...marksProps} />
+      <Marks type='slider' {...marksProps} />
     </ResponderView>
   )
 }

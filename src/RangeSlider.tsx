@@ -5,7 +5,7 @@ import Track from './components/Track'
 import Thumb from './components/Thumb'
 import ResponderView from './components/ResponderView'
 import useDrag from './hooks/useDrag'
-import Marks from './components/Marks'
+import Marks, { CustomMarkType } from './components/Marks'
 
 export type RangeSliderProps = RN.ViewProps & {
   range?: [number, number];
@@ -34,7 +34,7 @@ export type RangeSliderProps = RN.ViewProps & {
   onSlidingStart?: (range: [number, number]) => void;
   onSlidingComplete?: (range: [number, number]) => void;
   CustomThumb?: React.ComponentType<{ value: number; thumb: 'min' | 'max' }>;
-  CustomMark?: React.ComponentType<{ value: number; active: boolean }>;
+  StepMarker?: CustomMarkType<'range'>
   CustomTrack?: React.ComponentType<{ length: number; thickness: number; vertical: boolean; track: 'min' | 'mid' | 'max' ; style: RN.StyleProp<RN.ViewStyle>; color: RN.ColorValue }>;
 }
 
@@ -66,7 +66,7 @@ const RangeSlider = React.forwardRef<RN.View, RangeSliderProps>((props: RangeSli
     onSlidingComplete,
     CustomThumb,
     CustomTrack,
-    CustomMark,
+    StepMarker,
     ...others
   } = props
 
@@ -116,7 +116,7 @@ const RangeSlider = React.forwardRef<RN.View, RangeSliderProps>((props: RangeSli
     vertical
   }
 
-  const marksProps = { CustomMark, step, minimumValue, maximumValue, activeValues: range, inverted, vertical }
+  const marksProps = { StepMarker, step, minimumValue, maximumValue, activeValue: range, inverted, vertical }
 
   return (
     <ResponderView
@@ -137,7 +137,7 @@ const RangeSlider = React.forwardRef<RN.View, RangeSliderProps>((props: RangeSli
       <Track {...trackProps} color={inboundColor} style={midStyle} length={(maxTrackPct - minTrackPct) * 100} track='mid' />
       <Thumb key='max' {...thumbProps} updateValue={updateMaxValue} value={max} thumb='max' />
       <Track {...trackProps} color={outboundColor} style={maxStyle} length={(1 - maxTrackPct) * 100} track='max' />
-      <Marks {...marksProps} />
+      <Marks type='range' {...marksProps} />
     </ResponderView>
   )
 })
