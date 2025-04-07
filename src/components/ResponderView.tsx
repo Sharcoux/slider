@@ -102,7 +102,7 @@ const ResponderView = React.forwardRef<RN.View, Props>((props, ref) => {
 
   const keepResponder = useEvent((event: RN.GestureResponderEvent) => {
     event.stopPropagation()
-    return true
+    return false
   })
 
   const onLayout = useEvent((event: RN.LayoutChangeEvent) => {
