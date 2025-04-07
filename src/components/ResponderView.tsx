@@ -95,7 +95,10 @@ const ResponderView = React.forwardRef<RN.View, Props>((props, ref) => {
     event.stopPropagation()
   })
 
-  const isEnabled = useEvent(() => enabled)
+  const isEnabled = useEvent((event: RN.GestureResponderEvent) => {
+    event.stopPropagation()
+    return enabled
+  })
 
   const onLayout = useEvent((event: RN.LayoutChangeEvent) => {
     // For some reason, pageX and pageY might be 'undefined' in some cases
