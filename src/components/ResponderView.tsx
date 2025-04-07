@@ -100,6 +100,11 @@ const ResponderView = React.forwardRef<RN.View, Props>((props, ref) => {
     return enabled
   })
 
+  const keepResponder = useEvent((event: RN.GestureResponderEvent) => {
+    event.stopPropagation()
+    return true
+  })
+
   const onLayout = useEvent((event: RN.LayoutChangeEvent) => {
     // For some reason, pageX and pageY might be 'undefined' in some cases
     fallbackRef.current?.measure((_x, _y, _width, _height, pageX = 0, pageY = 0) => (originPageLocation.current = { pageX, pageY }))
@@ -124,6 +129,7 @@ const ResponderView = React.forwardRef<RN.View, Props>((props, ref) => {
       onResponderGrant={onPress}
       onResponderRelease={onRelease}
       onResponderMove={onMove}
+      onResponderTerminationRequest={keepResponder}
     >
       <SliderView
         vertical={vertical}
