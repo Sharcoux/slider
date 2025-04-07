@@ -8,6 +8,7 @@ It also provides support for Range slider (with 2 thumbs) and custom thumb rende
  * **Range slider** for sliders with min and max values
  * Supports for **React-Native-Web**
  * **No extra dependencies!**
+ * As **official** as `@react-native-community/slider`. Now named `@callstack/slider`, it is actually [not maintained by the community](https://github.com/react-native-community/discussions-and-proposals/discussions/1000). Thus, you should not worry about switching library for a better implementation if it meets your needs.
 
 ![](slider.gif)
 
