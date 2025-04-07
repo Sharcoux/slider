@@ -80,16 +80,19 @@ const ResponderView = React.forwardRef<RN.View, Props>((props, ref) => {
   const onMove = useEvent((event: RN.GestureResponderEvent) => {
     onMoveProp(eventToValue(event))
     event.preventDefault()
+    event.stopPropagation()
   })
 
   const onPress = useEvent((event: RN.GestureResponderEvent) => {
     onPressProp(eventToValue(event))
     event.preventDefault()
+    event.stopPropagation()
   })
 
   const onRelease = useEvent((event: RN.GestureResponderEvent) => {
     onReleaseProp(eventToValue(event))
     event.preventDefault()
+    event.stopPropagation()
   })
 
   const isEnabled = useEvent(() => enabled)

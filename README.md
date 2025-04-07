@@ -110,6 +110,7 @@ The component is probably too narrow. Increase the height of the component to en
 ### Changelog V 11.0.0:
 
  * **Breaking change:** Replace `CustomMark` prop with `StepMarker` prop so we follow the same API as @callstack/slider in order to ease migration
+ * Touch events stop propagation to avoid conflicting interactions with parent components
 
 ### Changelog V 10.0.0:
 
