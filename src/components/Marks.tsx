@@ -70,8 +70,9 @@ const Marks = <T extends 'slider' | 'range'>(props: CustomMarksProps<T>) => {
 
   const round = useRounding({ step, minimumValue, maximumValue })
   const marks = React.useMemo<JSX.Element[] | null>(() => {
-    if (!StepMarker) return null
-    const markCount = Math.round((maximumValue - minimumValue) / (step || 1)) + 1
+    // We cannot render marks if there is no step as we cannot render an infinite amount of marks
+    if (!StepMarker || !step) return null
+    const markCount = Math.round((maximumValue - minimumValue) / step) + 1
     return Array(markCount).fill(0).map((_, index) => {
       const markValue = round(index * step + minimumValue)
       const advance = ((vertical ? sliderHeight : sliderWidth) - THUMB_SIZE) * (markValue - minimumValue) / ((maximumValue - minimumValue) || 1) + THUMB_SIZE / 2
