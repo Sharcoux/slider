@@ -130,6 +130,7 @@ const ResponderView = React.forwardRef<RN.View, Props>((props, ref) => {
       onResponderRelease={onRelease}
       onResponderMove={onMove}
       onResponderTerminationRequest={keepResponder}
+      onResponderTerminate={onRelease}
     >
       <SliderView
         vertical={vertical}
