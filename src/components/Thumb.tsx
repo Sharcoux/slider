@@ -59,7 +59,7 @@ function getThumbStyle (size: number, color: RN.ColorValue) {
       backgroundColor: color,
       borderRadius: size / 2,
       overflow: 'hidden',
-      elevation: 10,
+      elevation: 2,
       zIndex: 10
     }
   }).thumb
@@ -74,7 +74,8 @@ const Thumb = ({
   color = 'darkcyan',
   CustomThumb,
   size = 15,
-  style, thumbImage,
+  style,
+  thumbImage,
   thumb,
   value,
   minimumValue,
