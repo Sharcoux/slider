@@ -20,8 +20,19 @@ const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumV
   const maxRef = React.useRef<number>(maxProp)
 
   // When updating the props, we immediately apply the change to the refs in order to have the correct values in useThumb
-  minRef.current = React.useMemo(() => Math.max(minimumValue, minProp), [minProp, minimumValue])
-  maxRef.current = React.useMemo(() => Math.min(maximumValue, maxProp), [maxProp, maximumValue])
+  // Using a useEffect would make the computation happen too late. Comparing the values between render is the only way.
+  // With this code, changing the props will overwrite the internal state, which is likely the expected behavior.
+  const memory = React.useRef<{ min: number, max: number, minValue: number, maxValue: number }>({ min: minimumValue, max: maximumValue, minValue: minProp, maxValue: maxProp })
+  if (memory.current.min !== minimumValue || memory.current.minValue !== minProp) {
+    memory.current.min = minimumValue
+    memory.current.minValue = minProp
+    minRef.current = Math.max(minimumValue, minProp)
+  }
+  if (memory.current.max !== maximumValue || memory.current.maxValue !== maxProp) {
+    memory.current.max = maximumValue
+    memory.current.maxValue = maxProp
+    maxRef.current = Math.min(maximumValue, maxProp)
+  }
 
   const onMinChange = useEvent((min: number) => {
     minRef.current = min
