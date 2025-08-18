@@ -35,10 +35,6 @@
     "react": ">=16.13.1",
     "react-native": ">=0.61.4"
   },
-  "optionalDependencies": {
-    "react-dom": ">=16.13.1",
-    "react-native-web": ">=0.13.4"
-  },
   "devDependencies": {
     "@babel/core": "^7.16.12",
     "@babel/runtime": "^7.16.7",
