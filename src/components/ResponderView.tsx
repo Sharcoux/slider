@@ -69,8 +69,12 @@ const ResponderView = React.forwardRef<RN.View, Props>((props, ref) => {
     const { pageX, pageY, locationX, locationY } = event.nativeEvent
     const x = RN.Platform.OS === 'web' ? locationX : (pageX - originPageLocation.current.pageX)
     const y = RN.Platform.OS === 'web' ? locationY : (pageY - originPageLocation.current.pageY)
-    const offset = isVertical ? y : x
+    let offset = isVertical ? y : x
     const size = containerSize.current?.[isVertical ? 'height' : 'width'] || 1
+
+    // In RTL mode, coordinates are flipped for horizontal sliders
+    if (RN.I18nManager.isRTL && !isVertical) offset = size - offset
+
     const newValue = inverted
       ? maximumValue - ((maximumValue - minimumValue) * offset) / size
       : minimumValue + ((maximumValue - minimumValue) * offset) / size
